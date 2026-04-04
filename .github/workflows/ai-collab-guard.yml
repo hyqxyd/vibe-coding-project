@@ -1,0 +1,30 @@
+name: ai-collab-guard
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  ai-collab-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: memory guard
+        run: python scripts/ai_collab/memory_guard.py --base-ref origin/main
+      - name: ai test engineer check
+        run: python scripts/ai_collab/ai_test_engineer_check.py --base-ref origin/main
+      - name: build team intent
+        run: python scripts/ai_collab/build_team_intent.py
+      - name: build weekly review
+        run: python scripts/ai_collab/build_weekly_review.py

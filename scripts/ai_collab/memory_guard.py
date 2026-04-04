@@ -27,10 +27,13 @@ def load_rules() -> dict:
     return json.loads(RULES_PATH.read_text(encoding="utf-8"))
 
 
-def git_changed_files(staged_only: bool) -> list[str]:
-    cmd = ["git", "diff", "--name-only"]
+def git_changed_files(staged_only: bool, base_ref: str | None) -> list[str]:
     if staged_only:
-        cmd.append("--cached")
+        cmd = ["git", "diff", "--name-only", "--cached"]
+    elif base_ref:
+        cmd = ["git", "diff", "--name-only", f"{base_ref}...HEAD"]
+    else:
+        cmd = ["git", "diff", "--name-only"]
     proc = subprocess.run(
         cmd,
         cwd=ROOT,
@@ -71,9 +74,9 @@ def is_core_change(path: str, rules: dict) -> bool:
     return any(path.startswith(prefix) for prefix in rules["core_change_prefixes"])
 
 
-def run_guard(staged_only: bool, block_on_hotspot: bool) -> GuardResult:
+def run_guard(staged_only: bool, block_on_hotspot: bool, base_ref: str | None) -> GuardResult:
     rules = load_rules()
-    changed = git_changed_files(staged_only=staged_only)
+    changed = git_changed_files(staged_only=staged_only, base_ref=base_ref)
     hotspots = parse_hotspots()
     core_changed = [p for p in changed if is_core_change(p, rules)]
     memory_changed = [p for p in changed if p in rules["required_memory_files"]]
@@ -111,12 +114,14 @@ def print_result(result: GuardResult) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="AI 协同记忆门禁检查")
     parser.add_argument("--staged-only", action="store_true", help="仅检查已暂存改动")
+    parser.add_argument("--base-ref", default="", help="对比分支，如 origin/main")
     parser.add_argument("--allow-hotspot", action="store_true", help="允许热点文件改动不阻断")
     args = parser.parse_args()
     rules = load_rules()
     block_on_hotspot = rules.get("default_block_on_hotspot", True) and not args.allow_hotspot
+    base_ref = args.base_ref.strip() or None
     try:
-        result = run_guard(staged_only=args.staged_only, block_on_hotspot=block_on_hotspot)
+        result = run_guard(staged_only=args.staged_only, block_on_hotspot=block_on_hotspot, base_ref=base_ref)
     except Exception as exc:
         print(json.dumps({"passed": False, "error": str(exc)}, ensure_ascii=False, indent=2))
         return 2

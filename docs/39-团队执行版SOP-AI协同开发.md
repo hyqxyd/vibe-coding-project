@@ -6,7 +6,7 @@
 flowchart TD
     A[任务认领<br/>登记Branch Registry] --> B[分支开发<br/>AI辅助实现]
     B --> C[异步同步<br/>更新CHANGELOG/FILE_MEMORY/AGENT_MEMORY]
-    C --> D[提交前门禁<br/>memory_guard + lint/typecheck/test]
+    C --> D[提交前门禁<br/>memory_guard + ai_test_engineer + lint/typecheck/test]
     D --> E{门禁通过?}
     E -- 否 --> F[补齐记忆或修复问题]
     F --> D
@@ -37,6 +37,7 @@ flowchart TD
 ## 2.3 提交前（硬门禁）
 
 - 执行记忆门禁：`python scripts/ai_collab/memory_guard.py --staged-only`
+- 执行测试工程门禁：`python scripts/ai_collab/ai_test_engineer_check.py --staged-only`
 - 运行 lint / typecheck / test
 - 检查 PR 模板是否完整、AI 复核字段是否填写
 
@@ -45,6 +46,7 @@ flowchart TD
 - 先 `rebase develop`
 - 处理冲突并记录同步结论
 - 合并后执行 `python scripts/ai_collab/build_team_intent.py`
+- 每周固定执行 `python scripts/ai_collab/build_weekly_review.py`
 - 把 `TEAM_INTENT.md` 作为下一轮 AI 默认上下文输入
 
 ## 3. Harness Engineering 角色分工
@@ -91,5 +93,7 @@ flowchart TD
 
 ```bash
 python scripts/ai_collab/memory_guard.py --staged-only
+python scripts/ai_collab/ai_test_engineer_check.py --staged-only
 python scripts/ai_collab/build_team_intent.py
+python scripts/ai_collab/build_weekly_review.py
 ```
