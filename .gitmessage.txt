@@ -1,0 +1,14 @@
+type(scope): subject
+
+[Context]
+- background:
+- impact:
+
+[Validation]
+- lint:
+- test:
+
+[AI]
+- ai_scope:
+- human_review:
+- risk:

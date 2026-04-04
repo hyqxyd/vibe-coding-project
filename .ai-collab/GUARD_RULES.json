@@ -1,0 +1,26 @@
+{
+  "core_change_prefixes": [
+    "frontend/",
+    "backend/",
+    "skills/"
+  ],
+  "core_change_files": [
+    "docs/05-Project-Schema-草案.md",
+    "docs/07-Schema-字段字典.md",
+    "docs/11-教师端接口契约.md",
+    "docs/13-Schema-Patch-操作规范.md",
+    "docs/14-代码生成器输入输出契约.md",
+    "docs/16-接口状态码清单.md",
+    "docs/17-权限矩阵.md",
+    "docs/24-数据库表设计草案.md",
+    "docs/30-数据库字段字典.md",
+    "docs/31-页面到接口映射表.md"
+  ],
+  "required_memory_files": [
+    ".ai-collab/CHANGELOG.md",
+    ".ai-collab/FILE_MEMORY.md",
+    ".ai-collab/AGENT_MEMORY.md",
+    ".ai-collab/BRANCH_REGISTRY.md"
+  ],
+  "default_block_on_hotspot": true
+}
