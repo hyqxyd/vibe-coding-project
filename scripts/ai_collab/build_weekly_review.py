@@ -54,6 +54,7 @@ def build_weekly_review() -> str:
     team_intent_text = read_text(AI_COLLAB / "TEAM_INTENT.md")
     file_memory_text = read_text(AI_COLLAB / "FILE_MEMORY.md")
     agent_memory_text = read_text(AI_COLLAB / "AGENT_MEMORY.md")
+    weekly_metrics_text = read_text(AI_COLLAB / "WEEKLY_METRICS.md")
     recent_events = tail_sections(changelog_text, "## ", 12)
     intent_bullets = [line[2:].strip() for line in team_intent_text.splitlines() if line.startswith("- ")]
     hotspots = detect_hotspots(file_memory_text)
@@ -91,6 +92,14 @@ def build_weekly_review() -> str:
             lines.append(f"- {item}")
     else:
         lines.append("- no reject record")
+    lines.append("")
+    lines.append("## Hotspot Trend Metrics")
+    metric_lines = [line for line in weekly_metrics_text.splitlines() if line.startswith("- ")]
+    if metric_lines:
+        for line in metric_lines[:10]:
+            lines.append(line)
+    else:
+        lines.append("- no weekly metrics data")
     lines.append("")
     lines.append("## Next Week Actions")
     lines.append("- reduce hotspot overlap by earlier branch claim")

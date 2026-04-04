@@ -26,5 +26,9 @@ jobs:
         run: python scripts/ai_collab/ai_test_engineer_check.py --base-ref origin/main
       - name: build team intent
         run: python scripts/ai_collab/build_team_intent.py
+      - name: snapshot hotspot history
+        run: python scripts/ai_collab/snapshot_hotspot_history.py
+      - name: build weekly metrics
+        run: python scripts/ai_collab/build_weekly_metrics.py
       - name: build weekly review
         run: python scripts/ai_collab/build_weekly_review.py

@@ -40,12 +40,15 @@ flowchart TD
 - 执行测试工程门禁：`python scripts/ai_collab/ai_test_engineer_check.py --staged-only`
 - 运行 lint / typecheck / test
 - 检查 PR 模板是否完整、AI 复核字段是否填写
+- 本地 `pre-push` 自动执行上述两项门禁
 
 ## 2.4 合并窗口（同步）
 
 - 先 `rebase develop`
 - 处理冲突并记录同步结论
 - 合并后执行 `python scripts/ai_collab/build_team_intent.py`
+- 合并后执行 `python scripts/ai_collab/snapshot_hotspot_history.py`
+- 每周固定执行 `python scripts/ai_collab/build_weekly_metrics.py`
 - 每周固定执行 `python scripts/ai_collab/build_weekly_review.py`
 - 把 `TEAM_INTENT.md` 作为下一轮 AI 默认上下文输入
 
@@ -95,5 +98,7 @@ flowchart TD
 python scripts/ai_collab/memory_guard.py --staged-only
 python scripts/ai_collab/ai_test_engineer_check.py --staged-only
 python scripts/ai_collab/build_team_intent.py
+python scripts/ai_collab/snapshot_hotspot_history.py
+python scripts/ai_collab/build_weekly_metrics.py
 python scripts/ai_collab/build_weekly_review.py
 ```

@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+echo "[ai-collab] running memory guard..."
+python scripts/ai_collab/memory_guard.py --base-ref origin/main
+if [ $? -ne 0 ]; then
+  echo "[ai-collab] memory guard failed, push blocked."
+  exit 1
+fi
+
+echo "[ai-collab] running ai test engineer check..."
+python scripts/ai_collab/ai_test_engineer_check.py --base-ref origin/main
+if [ $? -ne 0 ]; then
+  echo "[ai-collab] ai test engineer check failed, push blocked."
+  exit 1
+fi
+
+echo "[ai-collab] checks passed."
+exit 0
