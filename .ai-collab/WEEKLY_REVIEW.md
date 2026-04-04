@@ -1,6 +1,6 @@
 # Weekly AI Collaboration Review
 
-- generated_at: 2026-04-04 22:49
+- generated_at: 2026-04-04 23:11
 
 ## Key Timeline
 - YYYY-MM-DD HH:mm - owner - branch
@@ -22,12 +22,17 @@
 - no reject record
 
 ## Hotspot Trend Metrics
-- generated_at: 2026-04-04 22:49
+- generated_at: 2026-04-04 23:11
 - window: 2026-03-29 ~ 2026-04-04
-- snapshot_count: 1
+- snapshot_count: 2
 - hotspot_active_days: 0
 - unique_hotspot_files: 0
 - no hotspot data in last 7 days
+
+## Conflict Risk Snapshot
+- global_risk_score: 0
+- source_rows: 2
+- no top risk files
 
 ## Next Week Actions
 - reduce hotspot overlap by earlier branch claim

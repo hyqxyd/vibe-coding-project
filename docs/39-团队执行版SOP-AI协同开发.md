@@ -49,6 +49,7 @@ flowchart TD
 - 合并后执行 `python scripts/ai_collab/build_team_intent.py`
 - 合并后执行 `python scripts/ai_collab/snapshot_hotspot_history.py`
 - 每周固定执行 `python scripts/ai_collab/build_weekly_metrics.py`
+- 每周固定执行 `python scripts/ai_collab/conflict_risk_score.py`
 - 每周固定执行 `python scripts/ai_collab/build_weekly_review.py`
 - 把 `TEAM_INTENT.md` 作为下一轮 AI 默认上下文输入
 
@@ -100,5 +101,6 @@ python scripts/ai_collab/ai_test_engineer_check.py --staged-only
 python scripts/ai_collab/build_team_intent.py
 python scripts/ai_collab/snapshot_hotspot_history.py
 python scripts/ai_collab/build_weekly_metrics.py
+python scripts/ai_collab/conflict_risk_score.py
 python scripts/ai_collab/build_weekly_review.py
 ```

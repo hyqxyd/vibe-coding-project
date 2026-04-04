@@ -30,5 +30,23 @@ jobs:
         run: python scripts/ai_collab/snapshot_hotspot_history.py
       - name: build weekly metrics
         run: python scripts/ai_collab/build_weekly_metrics.py
+      - name: conflict risk score
+        run: python scripts/ai_collab/conflict_risk_score.py
+      - name: write memory event
+        run: >
+          python scripts/ai_collab/write_memory_event.py
+          --event-type async_update
+          --branch "${{ github.ref_name }}"
+          --actor-type ai
+          --actor-id github-actions
+          --summary "ai-collab-guard run"
+          --files ".github/workflows/ai-collab-guard.yml"
+          --risk-level low
+          --risk-tags "ci,guard"
+          --risk-score 10
+          --human-review pending
+          --test-status unknown
+          --source github-actions
+          --request-id "${{ github.run_id }}"
       - name: build weekly review
         run: python scripts/ai_collab/build_weekly_review.py

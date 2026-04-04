@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import json
 import pathlib
 import re
 import sys
@@ -55,6 +56,13 @@ def build_weekly_review() -> str:
     file_memory_text = read_text(AI_COLLAB / "FILE_MEMORY.md")
     agent_memory_text = read_text(AI_COLLAB / "AGENT_MEMORY.md")
     weekly_metrics_text = read_text(AI_COLLAB / "WEEKLY_METRICS.md")
+    conflict_risk_json_text = read_text(AI_COLLAB / "CONFLICT_RISK.json")
+    conflict_risk_data = {}
+    if conflict_risk_json_text.strip():
+        try:
+            conflict_risk_data = json.loads(conflict_risk_json_text)
+        except json.JSONDecodeError:
+            conflict_risk_data = {}
     recent_events = tail_sections(changelog_text, "## ", 12)
     intent_bullets = [line[2:].strip() for line in team_intent_text.splitlines() if line.startswith("- ")]
     hotspots = detect_hotspots(file_memory_text)
@@ -100,6 +108,19 @@ def build_weekly_review() -> str:
             lines.append(line)
     else:
         lines.append("- no weekly metrics data")
+    lines.append("")
+    lines.append("## Conflict Risk Snapshot")
+    if conflict_risk_data:
+        lines.append(f"- global_risk_score: {conflict_risk_data.get('global_risk_score', 0)}")
+        lines.append(f"- source_rows: {conflict_risk_data.get('source_rows', 0)}")
+        top_files = conflict_risk_data.get("top_files", [])
+        if top_files:
+            for item in top_files[:5]:
+                lines.append(f"- {item.get('file', '')} | score={item.get('risk_score', 0)}")
+        else:
+            lines.append("- no top risk files")
+    else:
+        lines.append("- no conflict risk data")
     lines.append("")
     lines.append("## Next Week Actions")
     lines.append("- reduce hotspot overlap by earlier branch claim")
