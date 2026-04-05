@@ -4,6 +4,7 @@
 
 | file_path | last_change_branch | last_change_intent | interface_impact | downstream_impact | conflict_hotspot | review_required_by | updated_at |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| skills/ai-collab-governance/SKILL.md | refactor/skills-extraction | 从主仓移除，迁移至 vibe-coding-skills | none | none | false | ai | 2026-04-05 23:30 |
 | frontend/src/pages/Demo.tsx | feature/alice/ui-demo | 调整页面交互流程 | low | medium | false | teacher_core | 2026-04-04 20:00 |
 
 ## 填写规则

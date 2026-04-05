@@ -4,6 +4,7 @@
 
 | agent_id | branch | task_goal | generated_files | key_decisions | known_uncertainties | human_validation_result | updated_at |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| claude-code-02 | refactor/skills-extraction | 将 skills 从主库分离至新仓库 | skills/ | 独立技能仓库有利于复用 | git clone 过程是否稳定 | pass | 2026-04-05 23:30 |
 | claude-code-01 | feature/alice/schema-validator | 增加 patch 冲突校验 | docs/13-Schema-Patch-操作规范.md | 冲突优先阻断合并 | 暂未覆盖批量 patch 场景 | pass_with_notes | 2026-04-04 20:10 |
 
 ## 填写规则
