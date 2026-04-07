@@ -89,11 +89,47 @@ tags:
 
 ---
 
-## 4. 给开发团队的建议
+## 4. 团队协同：如何让全员共享这套 Obsidian 记忆？
 
-1. **安装 Obsidian 客户端**：
-   - 团队所有成员（人类）可以在本地用 Obsidian 打开项目的 `.ai-collab/` 文件夹。
-   - 通过快捷键 `Ctrl+O` 和关系图谱（Graph View），人类也能直观地看到当前项目的“记忆热点”和“冲突风险区”。
-2. **把 AI 当作同事**：
+由于我们的 `.ai-collab` 本身就在 Git 代码仓库中，所以**基于 Git 的同步方案**是成本最低、最适合研发团队的做法。
+
+### 4.1 团队成员接入步骤
+
+1. **拉取代码库**：人类开发者正常通过 `git clone` 或 `git pull` 获取最新的项目代码（包含 `.ai-collab` 目录）。
+2. **配置 Obsidian 客户端**：
+   - 下载并安装 [Obsidian](https://obsidian.md/)。
+   - 点击 **“打开文件夹作为仓库 (Open folder as vault)”**，选择项目根目录下的 `.ai-collab` 文件夹。
+3. **安装 Obsidian Git 插件（强烈推荐）**：
+   - 在 Obsidian 设置 -> 第三方插件中，关闭“安全模式”。
+   - 搜索并安装 **Obsidian Git** 插件。
+   - **核心配置**：
+     - `Vault backup interval`: 设为 10 分钟（每 10 分钟自动 Commit & Push）。
+     - `Pull updates on startup`: 开启（每次打开自动拉取队友的最新记忆）。
+
+### 4.2 防冲突与 `.gitignore` 最佳实践
+
+Obsidian 会在仓库下生成 `.obsidian` 隐藏文件夹用于存放配置，为了避免每个人界面布局不同导致的 Git 冲突，我们必须在项目的 `.gitignore` 中添加以下规则：
+
+```gitignore
+# Obsidian 个人工作区与缓存（禁止同步）
+.ai-collab/.obsidian/workspace.json
+.ai-collab/.obsidian/workspace-mobile.json
+.ai-collab/.obsidian/cache/
+```
+*注：我们允许同步 `.ai-collab/.obsidian/plugins/`，这样一个人装了 Git 插件或图谱强化插件，全队都能自动用上。*
+
+### 4.3 人机协同的日常体验
+
+- **看全景**：新员工入职或 Reviewer 审查代码时，打开 Obsidian 的**关系图谱（Graph View）**，立刻能看到当前哪个模块（节点）最大、被修改得最频繁，哪里是冲突高发区。
+- **无缝冲突解决**：因为本质是 Markdown 纯文本，两人（或两个 AI）同时修改了一篇日志，Git 能自动 Merge 绝大部分非同行修改；遇到真冲突，在 VSCode 或 IDE 里解决即可。
+- **移动端打通（可选）**：如果主管想在手机上看开发进展，iOS 可以用 Working Copy 挂载 Git 仓库，Android 可以用 Termux，直接用手机版 Obsidian 无缝查看。
+
+---
+
+## 5. 给开发团队的建议
+
+1. **把 AI 当作同事**：
    - 不要在代码里用长篇大论的注释解释架构，而是写 `// 详细决策见 [[ADR-005]]`。
    - 让 AI 养成习惯：遇到不确定的点，主动在 Obsidian 日志里 `@` 对应的人类 Owner。
+2. **随手记录，让机器去连线**：
+   - 开发者不用费力去整理目录结构，只要在写 Markdown 时随手打上 `[[关键字]]` 和 `#tag`，图谱就会自动生长，成为超级 AI 员工最强大的上下文来源。

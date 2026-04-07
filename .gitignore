@@ -1,3 +1,4 @@
-﻿__pycache__/
-*.pyc
-
+# 忽略 Obsidian 产生的与个人设备绑定的配置
+.ai-collab/.obsidian/workspace.json
+.ai-collab/.obsidian/workspace-mobile.json
+.ai-collab/.obsidian/cache/
