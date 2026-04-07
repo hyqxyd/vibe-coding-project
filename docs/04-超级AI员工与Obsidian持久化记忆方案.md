@@ -99,12 +99,17 @@ tags:
 2. **配置 Obsidian 客户端**：
    - 下载并安装 [Obsidian](https://obsidian.md/)。
    - 点击 **“打开文件夹作为仓库 (Open folder as vault)”**，选择项目根目录下的 `.ai-collab` 文件夹。
-3. **安装 Obsidian Git 插件（强烈推荐）**：
+3. **安装与配置 Obsidian Git 插件（强烈推荐）**：
    - 在 Obsidian 设置 -> 第三方插件中，关闭“安全模式”。
-   - 搜索并安装 **Obsidian Git** 插件。
-   - **核心配置**：
-     - `Vault backup interval`: 设为 10 分钟（每 10 分钟自动 Commit & Push）。
-     - `Pull updates on startup`: 开启（每次打开自动拉取队友的最新记忆）。
+   - 搜索并安装 **Obsidian Git** 插件（作者：Denis Olegov）。
+   - **核心自动同步设置（重要）**：
+     - `Auto commit-and-sync interval (minutes)`: 设为 **10**（每 10 分钟自动后台提交并推送）。
+     - `Auto commit-and-sync after stopping file edits`: **打开**（防止打字打一半提交）。
+     - `Pull on startup`: **打开**（每次打开自动拉取队友最新记忆）。
+     - `Auto commit-and-sync only staged files`: **保持关闭**（确保只提交 `.ai-collab` 目录，不影响外部业务代码）。
+   - **关于提交规范与门禁（无需修改）**：
+     - 插件默认提交信息为 `vault backup: {{date}}`。
+     - 项目底层的 Git 门禁（`commit-msg` hook）已经对该格式加入了**白名单免检机制**，不会与业务代码的 `type(scope): subject` 规范产生冲突，直接开箱即用即可，**无需配置 Advanced 选项中的任何 Git 路径**。
 
 ### 4.2 防冲突与 `.gitignore` 最佳实践
 
