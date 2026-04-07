@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package vibe.workspace.v1;
+
+// Go 数据面包路径声明
+option go_package = "github.com/hyqxyd/vibe-coding-project/backend-data-plane/api/workspace/v1;workspacev1";
+// Java 控制面包路径声明
+option java_multiple_files = true;
+option java_package = "com.vibecoding.workspace.v1";
+option java_outer_classname = "WorkspaceProto";
+
+// 沙箱工作空间服务 (Go 数据面实现，Java 控制面调用)
+service WorkspaceService {
+  // 创建并启动一个新的学生沙箱容器
+  rpc StartWorkspace(StartWorkspaceRequest) returns (StartWorkspaceResponse);
+  
+  // 暂停/停止沙箱运行
+  rpc StopWorkspace(StopWorkspaceRequest) returns (StopWorkspaceResponse);
+  
+  // 获取沙箱当前状态与终端连接信息
+  rpc GetWorkspaceStatus(GetWorkspaceStatusRequest) returns (GetWorkspaceStatusResponse);
+  
+  // 彻底销毁沙箱并回收所有资源
+  rpc DestroyWorkspace(DestroyWorkspaceRequest) returns (DestroyWorkspaceResponse);
+}
+
+// ---------------- 沙箱状态枚举 ----------------
+enum WorkspaceStatus {
+  WORKSPACE_STATUS_UNSPECIFIED = 0;
+  WORKSPACE_STATUS_STARTING = 1;  // 正在拉取镜像/启动中
+  WORKSPACE_STATUS_RUNNING = 2;   // 正常运行，终端可连
+  WORKSPACE_STATUS_STOPPED = 3;   // 已暂停/休眠
+  WORKSPACE_STATUS_FAILED = 4;    // 启动失败或意外崩溃
+}
+
+// ---------------- 启动沙箱 ----------------
+message StartWorkspaceRequest {
+  string workspace_id = 1;    // 全局唯一的沙箱ID (由 Java 控制面生成下发)
+  string student_id = 2;      // 学生唯一标识
+  string course_id = 3;       // 关联的课程/任务标识
+  string base_image = 4;      // 基础镜像名 (如: vibe-python-base:latest)
+  int32 cpu_limit_m = 5;      // CPU 限制 (例如 1000m = 1 core)
+  int32 memory_limit_mb = 6;  // 内存限制 (MB)
+}
+
+message StartWorkspaceResponse {
+  string workspace_id = 1;    // 回传沙箱ID
+  string container_id = 2;    // Docker/K8s 分配的底层容器ID
+  string pty_ws_url = 3;      // 终端 WebSocket 代理地址 (学生连这个地址敲命令)
+  WorkspaceStatus status = 4; // 当前状态
+  string error_message = 5;   // 错误信息（如果启动失败）
+}
+
+// ---------------- 停止沙箱 ----------------
+message StopWorkspaceRequest {
+  string workspace_id = 1;
+}
+
+message StopWorkspaceResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+// ---------------- 查询状态 ----------------
+message GetWorkspaceStatusRequest {
+  string workspace_id = 1;
+}
+
+message GetWorkspaceStatusResponse {
+  string workspace_id = 1;
+  WorkspaceStatus status = 2;
+  string pty_ws_url = 3;      // 如果运行中，返回 PTY 地址
+  int64 uptime_seconds = 4;   // 已运行时长
+}
+
+// ---------------- 销毁沙箱 ----------------
+message DestroyWorkspaceRequest {
+  string workspace_id = 1;
+}
+
+message DestroyWorkspaceResponse {
+  bool success = 1;
+  string error_message = 2;
+}
