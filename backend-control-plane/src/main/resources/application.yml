@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: control-plane
+  # 预留给 Spring AI (如智谱/OpenAI) 的基础配置位置
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:mock_key}
+      base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+
+# gRPC 客户端连接池配置
+grpc:
+  client:
+    workspace-daemon: # 这个名字对应 @GrpcClient 注解
+      address: 'static://127.0.0.1:9090'  # Go 数据面服务地址
+      negotiation-type: plaintext         # 内网不强制 TLS
