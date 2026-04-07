@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { Play, Settings, TerminalSquare, Eye, LayoutTemplate } from 'lucide-react'
+import { Play, Settings, TerminalSquare, Eye, LayoutTemplate, Code2, Network } from 'lucide-react'
 import { CodeEditor } from './components/CodeEditor'
 import { TerminalPanel } from './components/TerminalPanel'
 import { AgentFlowCanvas } from './components/AgentFlowCanvas'
 import { AiChatPanel } from './components/AiChatPanel'
+import { FileExplorer } from './components/FileExplorer'
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'flow' | 'preview'>('flow');
+  const [activeTab, setActiveTab] = useState<'flow' | 'code' | 'preview'>('flow');
   const [selectedNode, setSelectedNode] = useState<any>(null);
   const [code, setCode] = useState('// Click on an Agent node in the flow canvas to edit its Prompt or Code.\n');
   const [output, setOutput] = useState('Ready to execute multi-agent workflow...\n');
@@ -32,15 +33,21 @@ function App() {
             <div className="flex bg-[#1e1e1e] p-1 rounded-md ml-4 border border-[#3c3c3c]">
               <button 
                 onClick={() => setActiveTab('flow')}
-                className={`px-3 py-1 text-xs rounded transition-colors ${activeTab === 'flow' ? 'bg-[#3c3c3c] text-white' : 'text-gray-400 hover:text-white'}`}
+                className={`px-3 py-1 text-xs rounded transition-colors flex items-center gap-1 ${activeTab === 'flow' ? 'bg-[#3c3c3c] text-white' : 'text-gray-400 hover:text-white'}`}
               >
-                Agent Flow (画布)
+                <Network size={14} /> Agent Flow (流程)
+              </button>
+              <button 
+                onClick={() => setActiveTab('code')}
+                className={`px-3 py-1 text-xs rounded transition-colors flex items-center gap-1 ${activeTab === 'code' ? 'bg-[#3c3c3c] text-white' : 'text-gray-400 hover:text-white'}`}
+              >
+                <Code2 size={14} /> Code Editor (代码)
               </button>
               <button 
                 onClick={() => setActiveTab('preview')}
                 className={`px-3 py-1 text-xs rounded transition-colors flex items-center gap-1 ${activeTab === 'preview' ? 'bg-[#3c3c3c] text-white' : 'text-gray-400 hover:text-white'}`}
               >
-                <Eye size={14} /> UI Preview (前端预览)
+                <Eye size={14} /> UI Preview (预览)
               </button>
             </div>
           </div>
@@ -58,11 +65,23 @@ function App() {
         {/* Content Area */}
         <div className="flex flex-1 overflow-hidden">
           
-          {/* Middle: Canvas or Preview */}
+          {activeTab === 'code' && <FileExplorer />}
+
+          {/* Middle: Canvas or Preview or Code */}
           <div className="flex-1 bg-[#1e1e1e] relative border-r border-[#252526]">
-            {activeTab === 'flow' ? (
+            {activeTab === 'flow' && (
               <AgentFlowCanvas onNodeClick={(e, node) => setSelectedNode(node)} />
-            ) : (
+            )}
+            
+            {activeTab === 'code' && (
+              <CodeEditor 
+                value={code} 
+                onChange={(val) => setCode(val || '')} 
+                language="python"
+              />
+            )}
+
+            {activeTab === 'preview' && (
               <div className="w-full h-full flex items-center justify-center bg-white text-black p-8">
                 {/* Mock UI Preview */}
                 <div className="w-full max-w-2xl h-full border rounded-xl shadow-lg flex flex-col p-6 text-center justify-center">
@@ -76,43 +95,45 @@ function App() {
             )}
           </div>
           
-          {/* Right Sidebar: Agent Config & Terminal */}
-          <div className="w-96 bg-[#252526] flex flex-col shrink-0">
-            {/* Config Header */}
-            <div className="h-12 bg-[#2d2d2d] flex items-center px-4 font-semibold text-sm border-b border-[#3c3c3c] gap-2">
-              <Settings size={16} />
-              Node Config: {selectedNode ? selectedNode.data.label : 'No node selected'}
-            </div>
-
-            {/* Prompt/Code Editor */}
-            <div className="flex-1 flex flex-col min-h-[50%] border-b border-[#3c3c3c]">
-              <div className="p-2 bg-[#1e1e1e] text-xs text-gray-400 font-semibold tracking-wider">PROMPT / CODE</div>
-              <div className="flex-1 relative">
-                {selectedNode ? (
-                  <CodeEditor 
-                    value={code} 
-                    onChange={(val) => setCode(val || '')} 
-                    language="python"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
-                    Select an agent node to edit
-                  </div>
-                )}
+          {/* Right Sidebar: Agent Config & Terminal (Only show in Flow mode or Code mode if needed, but let's keep it mostly for Flow) */}
+          {activeTab === 'flow' && (
+            <div className="w-96 bg-[#252526] flex flex-col shrink-0">
+              {/* Config Header */}
+              <div className="h-12 bg-[#2d2d2d] flex items-center px-4 font-semibold text-sm border-b border-[#3c3c3c] gap-2">
+                <Settings size={16} />
+                Node Config: {selectedNode ? selectedNode.data.label : 'No node selected'}
               </div>
-            </div>
 
-            {/* Terminal */}
-            <div className="h-64 shrink-0 flex flex-col bg-[#1e1e1e]">
-              <div className="p-2 bg-[#1e1e1e] text-xs text-gray-400 font-semibold tracking-wider border-b border-[#3c3c3c] flex items-center gap-2">
-                <TerminalSquare size={14} /> LOGS
+              {/* Prompt/Code Editor */}
+              <div className="flex-1 flex flex-col min-h-[50%] border-b border-[#3c3c3c]">
+                <div className="p-2 bg-[#1e1e1e] text-xs text-gray-400 font-semibold tracking-wider">PROMPT / CODE</div>
+                <div className="flex-1 relative">
+                  {selectedNode ? (
+                    <CodeEditor 
+                      value={code} 
+                      onChange={(val) => setCode(val || '')} 
+                      language="python"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+                      Select an agent node to edit
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="flex-1">
-                <TerminalPanel output={output} />
-              </div>
-            </div>
 
-          </div>
+              {/* Terminal */}
+              <div className="h-64 shrink-0 flex flex-col bg-[#1e1e1e]">
+                <div className="p-2 bg-[#1e1e1e] text-xs text-gray-400 font-semibold tracking-wider border-b border-[#3c3c3c] flex items-center gap-2">
+                  <TerminalSquare size={14} /> LOGS
+                </div>
+                <div className="flex-1">
+                  <TerminalPanel output={output} />
+                </div>
+              </div>
+
+            </div>
+          )}
 
         </div>
 
