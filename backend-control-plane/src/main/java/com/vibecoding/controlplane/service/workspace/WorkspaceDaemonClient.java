@@ -31,4 +31,15 @@ public interface WorkspaceDaemonClient {
      * 销毁沙箱并清理资源
      */
     void destroyWorkspace(String workspaceId);
+
+    /**
+     * 在沙箱中执行代码
+     *
+     * @param workspaceId 沙箱全局唯一标识
+     * @param files 文件映射集合
+     * @param command 执行的命令
+     * @param timeoutSeconds 超时时间(秒)
+     * @return 包含标准输出和标准错误的结果
+     */
+    CodeExecutionResult executeCode(String workspaceId, java.util.Map<String, String> files, String command, int timeoutSeconds);
 }

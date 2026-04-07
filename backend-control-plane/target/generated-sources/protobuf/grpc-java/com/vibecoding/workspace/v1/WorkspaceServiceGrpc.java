@@ -142,6 +142,37 @@ public final class WorkspaceServiceGrpc {
     return getDestroyWorkspaceMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.vibecoding.workspace.v1.ExecuteCodeRequest,
+      com.vibecoding.workspace.v1.ExecuteCodeResponse> getExecuteCodeMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ExecuteCode",
+      requestType = com.vibecoding.workspace.v1.ExecuteCodeRequest.class,
+      responseType = com.vibecoding.workspace.v1.ExecuteCodeResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.vibecoding.workspace.v1.ExecuteCodeRequest,
+      com.vibecoding.workspace.v1.ExecuteCodeResponse> getExecuteCodeMethod() {
+    io.grpc.MethodDescriptor<com.vibecoding.workspace.v1.ExecuteCodeRequest, com.vibecoding.workspace.v1.ExecuteCodeResponse> getExecuteCodeMethod;
+    if ((getExecuteCodeMethod = WorkspaceServiceGrpc.getExecuteCodeMethod) == null) {
+      synchronized (WorkspaceServiceGrpc.class) {
+        if ((getExecuteCodeMethod = WorkspaceServiceGrpc.getExecuteCodeMethod) == null) {
+          WorkspaceServiceGrpc.getExecuteCodeMethod = getExecuteCodeMethod =
+              io.grpc.MethodDescriptor.<com.vibecoding.workspace.v1.ExecuteCodeRequest, com.vibecoding.workspace.v1.ExecuteCodeResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ExecuteCode"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.vibecoding.workspace.v1.ExecuteCodeRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.vibecoding.workspace.v1.ExecuteCodeResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new WorkspaceServiceMethodDescriptorSupplier("ExecuteCode"))
+              .build();
+        }
+      }
+    }
+    return getExecuteCodeMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -232,6 +263,16 @@ public final class WorkspaceServiceGrpc {
         io.grpc.stub.StreamObserver<com.vibecoding.workspace.v1.DestroyWorkspaceResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDestroyWorkspaceMethod(), responseObserver);
     }
+
+    /**
+     * <pre>
+     * 将代码推送到沙箱中编译执行，并捕获输出结果
+     * </pre>
+     */
+    default void executeCode(com.vibecoding.workspace.v1.ExecuteCodeRequest request,
+        io.grpc.stub.StreamObserver<com.vibecoding.workspace.v1.ExecuteCodeResponse> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getExecuteCodeMethod(), responseObserver);
+    }
   }
 
   /**
@@ -310,6 +351,17 @@ public final class WorkspaceServiceGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDestroyWorkspaceMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * 将代码推送到沙箱中编译执行，并捕获输出结果
+     * </pre>
+     */
+    public void executeCode(com.vibecoding.workspace.v1.ExecuteCodeRequest request,
+        io.grpc.stub.StreamObserver<com.vibecoding.workspace.v1.ExecuteCodeResponse> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getExecuteCodeMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -369,6 +421,16 @@ public final class WorkspaceServiceGrpc {
     public com.vibecoding.workspace.v1.DestroyWorkspaceResponse destroyWorkspace(com.vibecoding.workspace.v1.DestroyWorkspaceRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDestroyWorkspaceMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * 将代码推送到沙箱中编译执行，并捕获输出结果
+     * </pre>
+     */
+    public com.vibecoding.workspace.v1.ExecuteCodeResponse executeCode(com.vibecoding.workspace.v1.ExecuteCodeRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getExecuteCodeMethod(), getCallOptions(), request);
     }
   }
 
@@ -434,12 +496,24 @@ public final class WorkspaceServiceGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDestroyWorkspaceMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * 将代码推送到沙箱中编译执行，并捕获输出结果
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.vibecoding.workspace.v1.ExecuteCodeResponse> executeCode(
+        com.vibecoding.workspace.v1.ExecuteCodeRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getExecuteCodeMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_START_WORKSPACE = 0;
   private static final int METHODID_STOP_WORKSPACE = 1;
   private static final int METHODID_GET_WORKSPACE_STATUS = 2;
   private static final int METHODID_DESTROY_WORKSPACE = 3;
+  private static final int METHODID_EXECUTE_CODE = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -473,6 +547,10 @@ public final class WorkspaceServiceGrpc {
         case METHODID_DESTROY_WORKSPACE:
           serviceImpl.destroyWorkspace((com.vibecoding.workspace.v1.DestroyWorkspaceRequest) request,
               (io.grpc.stub.StreamObserver<com.vibecoding.workspace.v1.DestroyWorkspaceResponse>) responseObserver);
+          break;
+        case METHODID_EXECUTE_CODE:
+          serviceImpl.executeCode((com.vibecoding.workspace.v1.ExecuteCodeRequest) request,
+              (io.grpc.stub.StreamObserver<com.vibecoding.workspace.v1.ExecuteCodeResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -520,6 +598,13 @@ public final class WorkspaceServiceGrpc {
               com.vibecoding.workspace.v1.DestroyWorkspaceRequest,
               com.vibecoding.workspace.v1.DestroyWorkspaceResponse>(
                 service, METHODID_DESTROY_WORKSPACE)))
+        .addMethod(
+          getExecuteCodeMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              com.vibecoding.workspace.v1.ExecuteCodeRequest,
+              com.vibecoding.workspace.v1.ExecuteCodeResponse>(
+                service, METHODID_EXECUTE_CODE)))
         .build();
   }
 
@@ -572,6 +657,7 @@ public final class WorkspaceServiceGrpc {
               .addMethod(getStopWorkspaceMethod())
               .addMethod(getGetWorkspaceStatusMethod())
               .addMethod(getDestroyWorkspaceMethod())
+              .addMethod(getExecuteCodeMethod())
               .build();
         }
       }

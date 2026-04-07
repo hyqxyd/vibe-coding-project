@@ -11,8 +11,11 @@ import com.vibecoding.workspace.v1.GetWorkspaceStatusRequest;
 import com.vibecoding.workspace.v1.GetWorkspaceStatusResponse;
 import com.vibecoding.workspace.v1.DestroyWorkspaceRequest;
 import com.vibecoding.workspace.v1.DestroyWorkspaceResponse;
+import com.vibecoding.workspace.v1.ExecuteCodeRequest;
+import com.vibecoding.workspace.v1.ExecuteCodeResponse;
 
 import java.util.UUID;
+import java.util.Map;
 
 /**
  * WorkspaceDaemonClient 的 gRPC 实现
@@ -80,5 +83,28 @@ public class GrpcWorkspaceClientImpl implements WorkspaceDaemonClient {
                 .setWorkspaceId(workspaceId)
                 .build();
         workspaceStub.destroyWorkspace(request);
+    }
+
+    @Override
+    public CodeExecutionResult executeCode(String workspaceId, Map<String, String> files, String command, int timeoutSeconds) {
+        System.out.println("Calling Go Data Plane via gRPC to execute code in workspace: " + workspaceId);
+        
+        ExecuteCodeRequest.Builder requestBuilder = ExecuteCodeRequest.newBuilder()
+                .setWorkspaceId(workspaceId)
+                .setCommand(command)
+                .setTimeoutSeconds(timeoutSeconds);
+                
+        if (files != null) {
+            requestBuilder.putAllFiles(files);
+        }
+        
+        ExecuteCodeResponse response = workspaceStub.executeCode(requestBuilder.build());
+        
+        return new CodeExecutionResult(
+                response.getStdout(),
+                response.getStderr(),
+                response.getExitCode(),
+                response.getErrorMessage()
+        );
     }
 }

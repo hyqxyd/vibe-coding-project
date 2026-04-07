@@ -22,6 +22,9 @@ service WorkspaceService {
   
   // 彻底销毁沙箱并回收所有资源
   rpc DestroyWorkspace(DestroyWorkspaceRequest) returns (DestroyWorkspaceResponse);
+  
+  // 将代码推送到沙箱中编译执行，并捕获输出结果
+  rpc ExecuteCode(ExecuteCodeRequest) returns (ExecuteCodeResponse);
 }
 
 // ---------------- 沙箱状态枚举 ----------------
@@ -81,4 +84,19 @@ message DestroyWorkspaceRequest {
 message DestroyWorkspaceResponse {
   bool success = 1;
   string error_message = 2;
+}
+
+// ---------------- 执行代码 ----------------
+message ExecuteCodeRequest {
+  string workspace_id = 1;
+  map<string, string> files = 2;  // 文件名到文件内容的映射 (例如 {"Main.java": "public class Main { ... }"})
+  string command = 3;             // 执行代码的命令 (例如 "javac Main.java && java Main")
+  int32 timeout_seconds = 4;      // 超时时间 (秒)
+}
+
+message ExecuteCodeResponse {
+  string stdout = 1;              // 标准输出
+  string stderr = 2;              // 错误输出
+  int32 exit_code = 3;            // 退出码
+  string error_message = 4;       // 执行过程中的内部错误信息 (如超时)
 }

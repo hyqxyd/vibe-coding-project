@@ -3,6 +3,7 @@ D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\GetWorkspaceStatusRequestOrBuilder.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\WorkspaceStatus.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StopWorkspaceRequestOrBuilder.java
+D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\service\workspace\CodeExecutionResult.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\WorkspaceProto.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\config\SecurityConfig.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\DestroyWorkspaceRequest.java
@@ -14,7 +15,9 @@ D:\Games\vibe coding project\backend-control-plane\target\generated-sources\prot
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\service\ai\AiReviewerService.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StopWorkspaceRequest.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\service\workspace\WorkspaceDaemonClient.java
+D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\ExecuteCodeResponseOrBuilder.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StartWorkspaceRequestOrBuilder.java
+D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\ExecuteCodeResponse.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\controller\WorkspaceController.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\GetWorkspaceStatusResponse.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\GetWorkspaceStatusResponseOrBuilder.java
@@ -22,6 +25,8 @@ D:\Games\vibe coding project\backend-control-plane\target\generated-sources\prot
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\DestroyWorkspaceRequestOrBuilder.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StartWorkspaceResponseOrBuilder.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\ControlPlaneApplication.java
+D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\ExecuteCodeRequest.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\service\workspace\GrpcWorkspaceClientImpl.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\GetWorkspaceStatusRequest.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StartWorkspaceRequest.java
+D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\ExecuteCodeRequestOrBuilder.java

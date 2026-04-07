@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v3.20.3
-// source: vibe/workspace/v1/workspace.proto
+// source: workspace.proto
 
 package workspacev1
 
@@ -61,11 +61,11 @@ func (x WorkspaceStatus) String() string {
 }
 
 func (WorkspaceStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_vibe_workspace_v1_workspace_proto_enumTypes[0].Descriptor()
+	return file_workspace_proto_enumTypes[0].Descriptor()
 }
 
 func (WorkspaceStatus) Type() protoreflect.EnumType {
-	return &file_vibe_workspace_v1_workspace_proto_enumTypes[0]
+	return &file_workspace_proto_enumTypes[0]
 }
 
 func (x WorkspaceStatus) Number() protoreflect.EnumNumber {
@@ -74,7 +74,7 @@ func (x WorkspaceStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use WorkspaceStatus.Descriptor instead.
 func (WorkspaceStatus) EnumDescriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{0}
+	return file_workspace_proto_rawDescGZIP(), []int{0}
 }
 
 // ---------------- 启动沙箱 ----------------
@@ -92,7 +92,7 @@ type StartWorkspaceRequest struct {
 
 func (x *StartWorkspaceRequest) Reset() {
 	*x = StartWorkspaceRequest{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[0]
+	mi := &file_workspace_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -104,7 +104,7 @@ func (x *StartWorkspaceRequest) String() string {
 func (*StartWorkspaceRequest) ProtoMessage() {}
 
 func (x *StartWorkspaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[0]
+	mi := &file_workspace_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -117,7 +117,7 @@ func (x *StartWorkspaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartWorkspaceRequest.ProtoReflect.Descriptor instead.
 func (*StartWorkspaceRequest) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{0}
+	return file_workspace_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *StartWorkspaceRequest) GetWorkspaceId() string {
@@ -175,7 +175,7 @@ type StartWorkspaceResponse struct {
 
 func (x *StartWorkspaceResponse) Reset() {
 	*x = StartWorkspaceResponse{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[1]
+	mi := &file_workspace_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -187,7 +187,7 @@ func (x *StartWorkspaceResponse) String() string {
 func (*StartWorkspaceResponse) ProtoMessage() {}
 
 func (x *StartWorkspaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[1]
+	mi := &file_workspace_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -200,7 +200,7 @@ func (x *StartWorkspaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StartWorkspaceResponse.ProtoReflect.Descriptor instead.
 func (*StartWorkspaceResponse) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{1}
+	return file_workspace_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *StartWorkspaceResponse) GetWorkspaceId() string {
@@ -248,7 +248,7 @@ type StopWorkspaceRequest struct {
 
 func (x *StopWorkspaceRequest) Reset() {
 	*x = StopWorkspaceRequest{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[2]
+	mi := &file_workspace_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -260,7 +260,7 @@ func (x *StopWorkspaceRequest) String() string {
 func (*StopWorkspaceRequest) ProtoMessage() {}
 
 func (x *StopWorkspaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[2]
+	mi := &file_workspace_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -273,7 +273,7 @@ func (x *StopWorkspaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopWorkspaceRequest.ProtoReflect.Descriptor instead.
 func (*StopWorkspaceRequest) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{2}
+	return file_workspace_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *StopWorkspaceRequest) GetWorkspaceId() string {
@@ -293,7 +293,7 @@ type StopWorkspaceResponse struct {
 
 func (x *StopWorkspaceResponse) Reset() {
 	*x = StopWorkspaceResponse{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[3]
+	mi := &file_workspace_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -305,7 +305,7 @@ func (x *StopWorkspaceResponse) String() string {
 func (*StopWorkspaceResponse) ProtoMessage() {}
 
 func (x *StopWorkspaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[3]
+	mi := &file_workspace_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -318,7 +318,7 @@ func (x *StopWorkspaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StopWorkspaceResponse.ProtoReflect.Descriptor instead.
 func (*StopWorkspaceResponse) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{3}
+	return file_workspace_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *StopWorkspaceResponse) GetSuccess() bool {
@@ -345,7 +345,7 @@ type GetWorkspaceStatusRequest struct {
 
 func (x *GetWorkspaceStatusRequest) Reset() {
 	*x = GetWorkspaceStatusRequest{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[4]
+	mi := &file_workspace_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -357,7 +357,7 @@ func (x *GetWorkspaceStatusRequest) String() string {
 func (*GetWorkspaceStatusRequest) ProtoMessage() {}
 
 func (x *GetWorkspaceStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[4]
+	mi := &file_workspace_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -370,7 +370,7 @@ func (x *GetWorkspaceStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWorkspaceStatusRequest.ProtoReflect.Descriptor instead.
 func (*GetWorkspaceStatusRequest) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{4}
+	return file_workspace_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetWorkspaceStatusRequest) GetWorkspaceId() string {
@@ -392,7 +392,7 @@ type GetWorkspaceStatusResponse struct {
 
 func (x *GetWorkspaceStatusResponse) Reset() {
 	*x = GetWorkspaceStatusResponse{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[5]
+	mi := &file_workspace_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -404,7 +404,7 @@ func (x *GetWorkspaceStatusResponse) String() string {
 func (*GetWorkspaceStatusResponse) ProtoMessage() {}
 
 func (x *GetWorkspaceStatusResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[5]
+	mi := &file_workspace_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -417,7 +417,7 @@ func (x *GetWorkspaceStatusResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWorkspaceStatusResponse.ProtoReflect.Descriptor instead.
 func (*GetWorkspaceStatusResponse) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{5}
+	return file_workspace_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetWorkspaceStatusResponse) GetWorkspaceId() string {
@@ -458,7 +458,7 @@ type DestroyWorkspaceRequest struct {
 
 func (x *DestroyWorkspaceRequest) Reset() {
 	*x = DestroyWorkspaceRequest{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[6]
+	mi := &file_workspace_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -470,7 +470,7 @@ func (x *DestroyWorkspaceRequest) String() string {
 func (*DestroyWorkspaceRequest) ProtoMessage() {}
 
 func (x *DestroyWorkspaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[6]
+	mi := &file_workspace_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -483,7 +483,7 @@ func (x *DestroyWorkspaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DestroyWorkspaceRequest.ProtoReflect.Descriptor instead.
 func (*DestroyWorkspaceRequest) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{6}
+	return file_workspace_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *DestroyWorkspaceRequest) GetWorkspaceId() string {
@@ -503,7 +503,7 @@ type DestroyWorkspaceResponse struct {
 
 func (x *DestroyWorkspaceResponse) Reset() {
 	*x = DestroyWorkspaceResponse{}
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[7]
+	mi := &file_workspace_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -515,7 +515,7 @@ func (x *DestroyWorkspaceResponse) String() string {
 func (*DestroyWorkspaceResponse) ProtoMessage() {}
 
 func (x *DestroyWorkspaceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_vibe_workspace_v1_workspace_proto_msgTypes[7]
+	mi := &file_workspace_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -528,7 +528,7 @@ func (x *DestroyWorkspaceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DestroyWorkspaceResponse.ProtoReflect.Descriptor instead.
 func (*DestroyWorkspaceResponse) Descriptor() ([]byte, []int) {
-	return file_vibe_workspace_v1_workspace_proto_rawDescGZIP(), []int{7}
+	return file_workspace_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *DestroyWorkspaceResponse) GetSuccess() bool {
@@ -545,11 +545,148 @@ func (x *DestroyWorkspaceResponse) GetErrorMessage() string {
 	return ""
 }
 
-var File_vibe_workspace_v1_workspace_proto protoreflect.FileDescriptor
+// ---------------- 执行代码 ----------------
+type ExecuteCodeRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	WorkspaceId    string                 `protobuf:"bytes,1,opt,name=workspace_id,json=workspaceId,proto3" json:"workspace_id,omitempty"`
+	Files          map[string]string      `protobuf:"bytes,2,rep,name=files,proto3" json:"files,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 文件名到文件内容的映射 (例如 {"Main.java": "public class Main { ... }"})
+	Command        string                 `protobuf:"bytes,3,opt,name=command,proto3" json:"command,omitempty"`                                                                       // 执行代码的命令 (例如 "javac Main.java && java Main")
+	TimeoutSeconds int32                  `protobuf:"varint,4,opt,name=timeout_seconds,json=timeoutSeconds,proto3" json:"timeout_seconds,omitempty"`                                  // 超时时间 (秒)
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
 
-const file_vibe_workspace_v1_workspace_proto_rawDesc = "" +
+func (x *ExecuteCodeRequest) Reset() {
+	*x = ExecuteCodeRequest{}
+	mi := &file_workspace_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExecuteCodeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExecuteCodeRequest) ProtoMessage() {}
+
+func (x *ExecuteCodeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_workspace_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExecuteCodeRequest.ProtoReflect.Descriptor instead.
+func (*ExecuteCodeRequest) Descriptor() ([]byte, []int) {
+	return file_workspace_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ExecuteCodeRequest) GetWorkspaceId() string {
+	if x != nil {
+		return x.WorkspaceId
+	}
+	return ""
+}
+
+func (x *ExecuteCodeRequest) GetFiles() map[string]string {
+	if x != nil {
+		return x.Files
+	}
+	return nil
+}
+
+func (x *ExecuteCodeRequest) GetCommand() string {
+	if x != nil {
+		return x.Command
+	}
+	return ""
+}
+
+func (x *ExecuteCodeRequest) GetTimeoutSeconds() int32 {
+	if x != nil {
+		return x.TimeoutSeconds
+	}
+	return 0
+}
+
+type ExecuteCodeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Stdout        string                 `protobuf:"bytes,1,opt,name=stdout,proto3" json:"stdout,omitempty"`                                 // 标准输出
+	Stderr        string                 `protobuf:"bytes,2,opt,name=stderr,proto3" json:"stderr,omitempty"`                                 // 错误输出
+	ExitCode      int32                  `protobuf:"varint,3,opt,name=exit_code,json=exitCode,proto3" json:"exit_code,omitempty"`            // 退出码
+	ErrorMessage  string                 `protobuf:"bytes,4,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"` // 执行过程中的内部错误信息 (如超时)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExecuteCodeResponse) Reset() {
+	*x = ExecuteCodeResponse{}
+	mi := &file_workspace_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExecuteCodeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExecuteCodeResponse) ProtoMessage() {}
+
+func (x *ExecuteCodeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_workspace_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExecuteCodeResponse.ProtoReflect.Descriptor instead.
+func (*ExecuteCodeResponse) Descriptor() ([]byte, []int) {
+	return file_workspace_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ExecuteCodeResponse) GetStdout() string {
+	if x != nil {
+		return x.Stdout
+	}
+	return ""
+}
+
+func (x *ExecuteCodeResponse) GetStderr() string {
+	if x != nil {
+		return x.Stderr
+	}
+	return ""
+}
+
+func (x *ExecuteCodeResponse) GetExitCode() int32 {
+	if x != nil {
+		return x.ExitCode
+	}
+	return 0
+}
+
+func (x *ExecuteCodeResponse) GetErrorMessage() string {
+	if x != nil {
+		return x.ErrorMessage
+	}
+	return ""
+}
+
+var File_workspace_proto protoreflect.FileDescriptor
+
+const file_workspace_proto_rawDesc = "" +
 	"\n" +
-	"!vibe/workspace/v1/workspace.proto\x12\x11vibe.workspace.v1\"\xdd\x01\n" +
+	"\x0fworkspace.proto\x12\x11vibe.workspace.v1\"\xdd\x01\n" +
 	"\x15StartWorkspaceRequest\x12!\n" +
 	"\fworkspace_id\x18\x01 \x01(\tR\vworkspaceId\x12\x1d\n" +
 	"\n" +
@@ -583,35 +720,50 @@ const file_vibe_workspace_v1_workspace_proto_rawDesc = "" +
 	"\fworkspace_id\x18\x01 \x01(\tR\vworkspaceId\"Y\n" +
 	"\x18DestroyWorkspaceResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12#\n" +
-	"\rerror_message\x18\x02 \x01(\tR\ferrorMessage*\xab\x01\n" +
+	"\rerror_message\x18\x02 \x01(\tR\ferrorMessage\"\xfc\x01\n" +
+	"\x12ExecuteCodeRequest\x12!\n" +
+	"\fworkspace_id\x18\x01 \x01(\tR\vworkspaceId\x12F\n" +
+	"\x05files\x18\x02 \x03(\v20.vibe.workspace.v1.ExecuteCodeRequest.FilesEntryR\x05files\x12\x18\n" +
+	"\acommand\x18\x03 \x01(\tR\acommand\x12'\n" +
+	"\x0ftimeout_seconds\x18\x04 \x01(\x05R\x0etimeoutSeconds\x1a8\n" +
+	"\n" +
+	"FilesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x87\x01\n" +
+	"\x13ExecuteCodeResponse\x12\x16\n" +
+	"\x06stdout\x18\x01 \x01(\tR\x06stdout\x12\x16\n" +
+	"\x06stderr\x18\x02 \x01(\tR\x06stderr\x12\x1b\n" +
+	"\texit_code\x18\x03 \x01(\x05R\bexitCode\x12#\n" +
+	"\rerror_message\x18\x04 \x01(\tR\ferrorMessage*\xab\x01\n" +
 	"\x0fWorkspaceStatus\x12 \n" +
 	"\x1cWORKSPACE_STATUS_UNSPECIFIED\x10\x00\x12\x1d\n" +
 	"\x19WORKSPACE_STATUS_STARTING\x10\x01\x12\x1c\n" +
 	"\x18WORKSPACE_STATUS_RUNNING\x10\x02\x12\x1c\n" +
 	"\x18WORKSPACE_STATUS_STOPPED\x10\x03\x12\x1b\n" +
-	"\x17WORKSPACE_STATUS_FAILED\x10\x042\xbd\x03\n" +
+	"\x17WORKSPACE_STATUS_FAILED\x10\x042\x9b\x04\n" +
 	"\x10WorkspaceService\x12e\n" +
 	"\x0eStartWorkspace\x12(.vibe.workspace.v1.StartWorkspaceRequest\x1a).vibe.workspace.v1.StartWorkspaceResponse\x12b\n" +
 	"\rStopWorkspace\x12'.vibe.workspace.v1.StopWorkspaceRequest\x1a(.vibe.workspace.v1.StopWorkspaceResponse\x12q\n" +
 	"\x12GetWorkspaceStatus\x12,.vibe.workspace.v1.GetWorkspaceStatusRequest\x1a-.vibe.workspace.v1.GetWorkspaceStatusResponse\x12k\n" +
-	"\x10DestroyWorkspace\x12*.vibe.workspace.v1.DestroyWorkspaceRequest\x1a+.vibe.workspace.v1.DestroyWorkspaceResponseB\x86\x01\n" +
+	"\x10DestroyWorkspace\x12*.vibe.workspace.v1.DestroyWorkspaceRequest\x1a+.vibe.workspace.v1.DestroyWorkspaceResponse\x12\\\n" +
+	"\vExecuteCode\x12%.vibe.workspace.v1.ExecuteCodeRequest\x1a&.vibe.workspace.v1.ExecuteCodeResponseB\x86\x01\n" +
 	"\x1bcom.vibecoding.workspace.v1B\x0eWorkspaceProtoP\x01ZUgithub.com/hyqxyd/vibe-coding-project/backend-data-plane/api/workspace/v1;workspacev1b\x06proto3"
 
 var (
-	file_vibe_workspace_v1_workspace_proto_rawDescOnce sync.Once
-	file_vibe_workspace_v1_workspace_proto_rawDescData []byte
+	file_workspace_proto_rawDescOnce sync.Once
+	file_workspace_proto_rawDescData []byte
 )
 
-func file_vibe_workspace_v1_workspace_proto_rawDescGZIP() []byte {
-	file_vibe_workspace_v1_workspace_proto_rawDescOnce.Do(func() {
-		file_vibe_workspace_v1_workspace_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_vibe_workspace_v1_workspace_proto_rawDesc), len(file_vibe_workspace_v1_workspace_proto_rawDesc)))
+func file_workspace_proto_rawDescGZIP() []byte {
+	file_workspace_proto_rawDescOnce.Do(func() {
+		file_workspace_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_workspace_proto_rawDesc), len(file_workspace_proto_rawDesc)))
 	})
-	return file_vibe_workspace_v1_workspace_proto_rawDescData
+	return file_workspace_proto_rawDescData
 }
 
-var file_vibe_workspace_v1_workspace_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_vibe_workspace_v1_workspace_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
-var file_vibe_workspace_v1_workspace_proto_goTypes = []any{
+var file_workspace_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_workspace_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_workspace_proto_goTypes = []any{
 	(WorkspaceStatus)(0),               // 0: vibe.workspace.v1.WorkspaceStatus
 	(*StartWorkspaceRequest)(nil),      // 1: vibe.workspace.v1.StartWorkspaceRequest
 	(*StartWorkspaceResponse)(nil),     // 2: vibe.workspace.v1.StartWorkspaceResponse
@@ -621,46 +773,52 @@ var file_vibe_workspace_v1_workspace_proto_goTypes = []any{
 	(*GetWorkspaceStatusResponse)(nil), // 6: vibe.workspace.v1.GetWorkspaceStatusResponse
 	(*DestroyWorkspaceRequest)(nil),    // 7: vibe.workspace.v1.DestroyWorkspaceRequest
 	(*DestroyWorkspaceResponse)(nil),   // 8: vibe.workspace.v1.DestroyWorkspaceResponse
+	(*ExecuteCodeRequest)(nil),         // 9: vibe.workspace.v1.ExecuteCodeRequest
+	(*ExecuteCodeResponse)(nil),        // 10: vibe.workspace.v1.ExecuteCodeResponse
+	nil,                                // 11: vibe.workspace.v1.ExecuteCodeRequest.FilesEntry
 }
-var file_vibe_workspace_v1_workspace_proto_depIdxs = []int32{
-	0, // 0: vibe.workspace.v1.StartWorkspaceResponse.status:type_name -> vibe.workspace.v1.WorkspaceStatus
-	0, // 1: vibe.workspace.v1.GetWorkspaceStatusResponse.status:type_name -> vibe.workspace.v1.WorkspaceStatus
-	1, // 2: vibe.workspace.v1.WorkspaceService.StartWorkspace:input_type -> vibe.workspace.v1.StartWorkspaceRequest
-	3, // 3: vibe.workspace.v1.WorkspaceService.StopWorkspace:input_type -> vibe.workspace.v1.StopWorkspaceRequest
-	5, // 4: vibe.workspace.v1.WorkspaceService.GetWorkspaceStatus:input_type -> vibe.workspace.v1.GetWorkspaceStatusRequest
-	7, // 5: vibe.workspace.v1.WorkspaceService.DestroyWorkspace:input_type -> vibe.workspace.v1.DestroyWorkspaceRequest
-	2, // 6: vibe.workspace.v1.WorkspaceService.StartWorkspace:output_type -> vibe.workspace.v1.StartWorkspaceResponse
-	4, // 7: vibe.workspace.v1.WorkspaceService.StopWorkspace:output_type -> vibe.workspace.v1.StopWorkspaceResponse
-	6, // 8: vibe.workspace.v1.WorkspaceService.GetWorkspaceStatus:output_type -> vibe.workspace.v1.GetWorkspaceStatusResponse
-	8, // 9: vibe.workspace.v1.WorkspaceService.DestroyWorkspace:output_type -> vibe.workspace.v1.DestroyWorkspaceResponse
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+var file_workspace_proto_depIdxs = []int32{
+	0,  // 0: vibe.workspace.v1.StartWorkspaceResponse.status:type_name -> vibe.workspace.v1.WorkspaceStatus
+	0,  // 1: vibe.workspace.v1.GetWorkspaceStatusResponse.status:type_name -> vibe.workspace.v1.WorkspaceStatus
+	11, // 2: vibe.workspace.v1.ExecuteCodeRequest.files:type_name -> vibe.workspace.v1.ExecuteCodeRequest.FilesEntry
+	1,  // 3: vibe.workspace.v1.WorkspaceService.StartWorkspace:input_type -> vibe.workspace.v1.StartWorkspaceRequest
+	3,  // 4: vibe.workspace.v1.WorkspaceService.StopWorkspace:input_type -> vibe.workspace.v1.StopWorkspaceRequest
+	5,  // 5: vibe.workspace.v1.WorkspaceService.GetWorkspaceStatus:input_type -> vibe.workspace.v1.GetWorkspaceStatusRequest
+	7,  // 6: vibe.workspace.v1.WorkspaceService.DestroyWorkspace:input_type -> vibe.workspace.v1.DestroyWorkspaceRequest
+	9,  // 7: vibe.workspace.v1.WorkspaceService.ExecuteCode:input_type -> vibe.workspace.v1.ExecuteCodeRequest
+	2,  // 8: vibe.workspace.v1.WorkspaceService.StartWorkspace:output_type -> vibe.workspace.v1.StartWorkspaceResponse
+	4,  // 9: vibe.workspace.v1.WorkspaceService.StopWorkspace:output_type -> vibe.workspace.v1.StopWorkspaceResponse
+	6,  // 10: vibe.workspace.v1.WorkspaceService.GetWorkspaceStatus:output_type -> vibe.workspace.v1.GetWorkspaceStatusResponse
+	8,  // 11: vibe.workspace.v1.WorkspaceService.DestroyWorkspace:output_type -> vibe.workspace.v1.DestroyWorkspaceResponse
+	10, // 12: vibe.workspace.v1.WorkspaceService.ExecuteCode:output_type -> vibe.workspace.v1.ExecuteCodeResponse
+	8,  // [8:13] is the sub-list for method output_type
+	3,  // [3:8] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_vibe_workspace_v1_workspace_proto_init() }
-func file_vibe_workspace_v1_workspace_proto_init() {
-	if File_vibe_workspace_v1_workspace_proto != nil {
+func init() { file_workspace_proto_init() }
+func file_workspace_proto_init() {
+	if File_workspace_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_vibe_workspace_v1_workspace_proto_rawDesc), len(file_vibe_workspace_v1_workspace_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_workspace_proto_rawDesc), len(file_workspace_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   8,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_vibe_workspace_v1_workspace_proto_goTypes,
-		DependencyIndexes: file_vibe_workspace_v1_workspace_proto_depIdxs,
-		EnumInfos:         file_vibe_workspace_v1_workspace_proto_enumTypes,
-		MessageInfos:      file_vibe_workspace_v1_workspace_proto_msgTypes,
+		GoTypes:           file_workspace_proto_goTypes,
+		DependencyIndexes: file_workspace_proto_depIdxs,
+		EnumInfos:         file_workspace_proto_enumTypes,
+		MessageInfos:      file_workspace_proto_msgTypes,
 	}.Build()
-	File_vibe_workspace_v1_workspace_proto = out.File
-	file_vibe_workspace_v1_workspace_proto_goTypes = nil
-	file_vibe_workspace_v1_workspace_proto_depIdxs = nil
+	File_workspace_proto = out.File
+	file_workspace_proto_goTypes = nil
+	file_workspace_proto_depIdxs = nil
 }

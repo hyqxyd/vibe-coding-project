@@ -1,13 +1,17 @@
 package service
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
 	pb "github.com/hyqxyd/vibe-coding-project/backend-data-plane/api/workspace/v1"
 )
 
@@ -35,10 +39,12 @@ func (s *WorkspaceService) StartWorkspace(ctx context.Context, req *pb.StartWork
 	}
 
 	resp, err := s.dockerClient.ContainerCreate(ctx, &container.Config{
-		Image: imageName,
-		Cmd:   []string{"tail", "-f", "/dev/null"},
-		Tty:   true,
+		Image:      imageName,
+		Cmd:        []string{"tail", "-f", "/dev/null"},
+		Tty:        true,
+		WorkingDir: "/workspace",
 	}, &container.HostConfig{
+		AutoRemove: true, // 容器停止时自动清理
 		Resources: container.Resources{
 			Memory:   int64(req.MemoryLimitMb) * 1024 * 1024,
 			NanoCPUs: int64(req.CpuLimitM) * 1000000,
@@ -117,4 +123,113 @@ func (s *WorkspaceService) DestroyWorkspace(ctx context.Context, req *pb.Destroy
 	}
 
 	return &pb.DestroyWorkspaceResponse{Success: true}, nil
+}
+
+func (s *WorkspaceService) ExecuteCode(ctx context.Context, req *pb.ExecuteCodeRequest) (*pb.ExecuteCodeResponse, error) {
+	log.Printf("Received ExecuteCode request for workspace: %s", req.WorkspaceId)
+	containerName := fmt.Sprintf("vibe-ws-%s", req.WorkspaceId)
+
+	// 1. Create a tar archive containing the files
+	var tarBuffer bytes.Buffer
+	tarWriter := tar.NewWriter(&tarBuffer)
+
+	for filename, content := range req.Files {
+		contentBytes := []byte(content)
+		header := &tar.Header{
+			Name: filename,
+			Mode: 0644,
+			Size: int64(len(contentBytes)),
+		}
+		if err := tarWriter.WriteHeader(header); err != nil {
+			return nil, fmt.Errorf("failed to write tar header for file %s: %w", filename, err)
+		}
+		if _, err := tarWriter.Write(contentBytes); err != nil {
+			return nil, fmt.Errorf("failed to write tar content for file %s: %w", filename, err)
+		}
+	}
+	if err := tarWriter.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close tar writer: %w", err)
+	}
+
+	// 2. Copy the tar archive into the container's /workspace directory
+	err := s.dockerClient.CopyToContainer(ctx, containerName, "/workspace", &tarBuffer, types.CopyToContainerOptions{})
+	if err != nil {
+		// If /workspace doesn't exist, we might need to create it first, but usually Docker handles it or we can set WorkDir in container creation
+		// Let's create the container with WorkDir: "/workspace" next time. For now, let's copy to "/" if it fails
+		err = s.dockerClient.CopyToContainer(ctx, containerName, "/", &tarBuffer, types.CopyToContainerOptions{})
+		if err != nil {
+			return nil, fmt.Errorf("failed to copy files to container: %w", err)
+		}
+	}
+
+	// 3. Create an exec instance to run the command
+	execConfig := types.ExecConfig{
+		Cmd:          []string{"sh", "-c", req.Command},
+		AttachStdout: true,
+		AttachStderr: true,
+		WorkingDir:   "/workspace",
+	}
+
+	// If the previous copy to /workspace failed and we copied to /, the working dir should probably be /
+	// To be safe, we'll execute it in the root or /workspace
+	execCreateResp, err := s.dockerClient.ContainerExecCreate(ctx, containerName, execConfig)
+	if err != nil {
+		// Fallback to / if /workspace doesn't exist
+		execConfig.WorkingDir = "/"
+		execCreateResp, err = s.dockerClient.ContainerExecCreate(ctx, containerName, execConfig)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create exec instance: %w", err)
+		}
+	}
+
+	// 4. Attach to the exec instance to read output
+	execAttachResp, err := s.dockerClient.ContainerExecAttach(ctx, execCreateResp.ID, types.ExecStartCheck{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to attach to exec instance: %w", err)
+	}
+	defer execAttachResp.Close()
+
+	// Handle timeout if specified
+	var execCtx context.Context
+	var cancel context.CancelFunc
+	if req.TimeoutSeconds > 0 {
+		execCtx, cancel = context.WithTimeout(ctx, time.Duration(req.TimeoutSeconds)*time.Second)
+		defer cancel()
+	} else {
+		execCtx = ctx
+	}
+
+	var stdoutBuf, stderrBuf bytes.Buffer
+	outputDone := make(chan error, 1)
+
+	go func() {
+		// Docker multiplexes stdout and stderr, stdcopy.StdCopy demultiplexes them
+		_, err := stdcopy.StdCopy(&stdoutBuf, &stderrBuf, execAttachResp.Reader)
+		outputDone <- err
+	}()
+
+	// Wait for execution to finish or timeout
+	select {
+	case <-execCtx.Done():
+		return &pb.ExecuteCodeResponse{
+			ErrorMessage: fmt.Sprintf("Execution timed out after %d seconds", req.TimeoutSeconds),
+			ExitCode:     -1,
+		}, nil
+	case err := <-outputDone:
+		if err != nil {
+			log.Printf("Error reading exec output: %v", err)
+		}
+	}
+
+	// 5. Inspect exec instance to get exit code
+	execInspect, err := s.dockerClient.ContainerExecInspect(ctx, execCreateResp.ID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to inspect exec instance: %w", err)
+	}
+
+	return &pb.ExecuteCodeResponse{
+		Stdout:   stdoutBuf.String(),
+		Stderr:   stderrBuf.String(),
+		ExitCode: int32(execInspect.ExitCode),
+	}, nil
 }

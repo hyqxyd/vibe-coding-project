@@ -55,6 +55,21 @@ public final class WorkspaceProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_vibe_workspace_v1_DestroyWorkspaceResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_vibe_workspace_v1_ExecuteCodeRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_vibe_workspace_v1_ExecuteCodeRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_vibe_workspace_v1_ExecuteCodeRequest_FilesEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_vibe_workspace_v1_ExecuteCodeRequest_FilesEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_vibe_workspace_v1_ExecuteCodeResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_vibe_workspace_v1_ExecuteCodeResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -84,26 +99,35 @@ public final class WorkspaceProto {
       " \001(\003\"/\n\027DestroyWorkspaceRequest\022\024\n\014works" +
       "pace_id\030\001 \001(\t\"B\n\030DestroyWorkspaceRespons" +
       "e\022\017\n\007success\030\001 \001(\010\022\025\n\rerror_message\030\002 \001(" +
-      "\t*\253\001\n\017WorkspaceStatus\022 \n\034WORKSPACE_STATU" +
-      "S_UNSPECIFIED\020\000\022\035\n\031WORKSPACE_STATUS_STAR" +
-      "TING\020\001\022\034\n\030WORKSPACE_STATUS_RUNNING\020\002\022\034\n\030" +
-      "WORKSPACE_STATUS_STOPPED\020\003\022\033\n\027WORKSPACE_" +
-      "STATUS_FAILED\020\0042\275\003\n\020WorkspaceService\022e\n\016" +
-      "StartWorkspace\022(.vibe.workspace.v1.Start" +
-      "WorkspaceRequest\032).vibe.workspace.v1.Sta" +
-      "rtWorkspaceResponse\022b\n\rStopWorkspace\022\'.v" +
-      "ibe.workspace.v1.StopWorkspaceRequest\032(." +
-      "vibe.workspace.v1.StopWorkspaceResponse\022" +
-      "q\n\022GetWorkspaceStatus\022,.vibe.workspace.v" +
-      "1.GetWorkspaceStatusRequest\032-.vibe.works" +
-      "pace.v1.GetWorkspaceStatusResponse\022k\n\020De" +
-      "stroyWorkspace\022*.vibe.workspace.v1.Destr" +
-      "oyWorkspaceRequest\032+.vibe.workspace.v1.D" +
-      "estroyWorkspaceResponseB\206\001\n\033com.vibecodi" +
-      "ng.workspace.v1B\016WorkspaceProtoP\001ZUgithu" +
-      "b.com/hyqxyd/vibe-coding-project/backend" +
-      "-data-plane/api/workspace/v1;workspacev1" +
-      "b\006proto3"
+      "\t\"\303\001\n\022ExecuteCodeRequest\022\024\n\014workspace_id" +
+      "\030\001 \001(\t\022?\n\005files\030\002 \003(\01320.vibe.workspace.v" +
+      "1.ExecuteCodeRequest.FilesEntry\022\017\n\007comma" +
+      "nd\030\003 \001(\t\022\027\n\017timeout_seconds\030\004 \001(\005\032,\n\nFil" +
+      "esEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"" +
+      "_\n\023ExecuteCodeResponse\022\016\n\006stdout\030\001 \001(\t\022\016" +
+      "\n\006stderr\030\002 \001(\t\022\021\n\texit_code\030\003 \001(\005\022\025\n\rerr" +
+      "or_message\030\004 \001(\t*\253\001\n\017WorkspaceStatus\022 \n\034" +
+      "WORKSPACE_STATUS_UNSPECIFIED\020\000\022\035\n\031WORKSP" +
+      "ACE_STATUS_STARTING\020\001\022\034\n\030WORKSPACE_STATU" +
+      "S_RUNNING\020\002\022\034\n\030WORKSPACE_STATUS_STOPPED\020" +
+      "\003\022\033\n\027WORKSPACE_STATUS_FAILED\020\0042\233\004\n\020Works" +
+      "paceService\022e\n\016StartWorkspace\022(.vibe.wor" +
+      "kspace.v1.StartWorkspaceRequest\032).vibe.w" +
+      "orkspace.v1.StartWorkspaceResponse\022b\n\rSt" +
+      "opWorkspace\022\'.vibe.workspace.v1.StopWork" +
+      "spaceRequest\032(.vibe.workspace.v1.StopWor" +
+      "kspaceResponse\022q\n\022GetWorkspaceStatus\022,.v" +
+      "ibe.workspace.v1.GetWorkspaceStatusReque" +
+      "st\032-.vibe.workspace.v1.GetWorkspaceStatu" +
+      "sResponse\022k\n\020DestroyWorkspace\022*.vibe.wor" +
+      "kspace.v1.DestroyWorkspaceRequest\032+.vibe" +
+      ".workspace.v1.DestroyWorkspaceResponse\022\\" +
+      "\n\013ExecuteCode\022%.vibe.workspace.v1.Execut" +
+      "eCodeRequest\032&.vibe.workspace.v1.Execute" +
+      "CodeResponseB\206\001\n\033com.vibecoding.workspac" +
+      "e.v1B\016WorkspaceProtoP\001ZUgithub.com/hyqxy" +
+      "d/vibe-coding-project/backend-data-plane" +
+      "/api/workspace/v1;workspacev1b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -157,6 +181,24 @@ public final class WorkspaceProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_vibe_workspace_v1_DestroyWorkspaceResponse_descriptor,
         new java.lang.String[] { "Success", "ErrorMessage", });
+    internal_static_vibe_workspace_v1_ExecuteCodeRequest_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_vibe_workspace_v1_ExecuteCodeRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_vibe_workspace_v1_ExecuteCodeRequest_descriptor,
+        new java.lang.String[] { "WorkspaceId", "Files", "Command", "TimeoutSeconds", });
+    internal_static_vibe_workspace_v1_ExecuteCodeRequest_FilesEntry_descriptor =
+      internal_static_vibe_workspace_v1_ExecuteCodeRequest_descriptor.getNestedTypes().get(0);
+    internal_static_vibe_workspace_v1_ExecuteCodeRequest_FilesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_vibe_workspace_v1_ExecuteCodeRequest_FilesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_vibe_workspace_v1_ExecuteCodeResponse_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_vibe_workspace_v1_ExecuteCodeResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_vibe_workspace_v1_ExecuteCodeResponse_descriptor,
+        new java.lang.String[] { "Stdout", "Stderr", "ExitCode", "ErrorMessage", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

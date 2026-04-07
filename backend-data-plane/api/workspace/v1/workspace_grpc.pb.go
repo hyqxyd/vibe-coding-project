@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v3.20.3
-// source: vibe/workspace/v1/workspace.proto
+// source: workspace.proto
 
 package workspacev1
 
@@ -23,6 +23,7 @@ const (
 	WorkspaceService_StopWorkspace_FullMethodName      = "/vibe.workspace.v1.WorkspaceService/StopWorkspace"
 	WorkspaceService_GetWorkspaceStatus_FullMethodName = "/vibe.workspace.v1.WorkspaceService/GetWorkspaceStatus"
 	WorkspaceService_DestroyWorkspace_FullMethodName   = "/vibe.workspace.v1.WorkspaceService/DestroyWorkspace"
+	WorkspaceService_ExecuteCode_FullMethodName        = "/vibe.workspace.v1.WorkspaceService/ExecuteCode"
 )
 
 // WorkspaceServiceClient is the client API for WorkspaceService service.
@@ -39,6 +40,8 @@ type WorkspaceServiceClient interface {
 	GetWorkspaceStatus(ctx context.Context, in *GetWorkspaceStatusRequest, opts ...grpc.CallOption) (*GetWorkspaceStatusResponse, error)
 	// 彻底销毁沙箱并回收所有资源
 	DestroyWorkspace(ctx context.Context, in *DestroyWorkspaceRequest, opts ...grpc.CallOption) (*DestroyWorkspaceResponse, error)
+	// 将代码推送到沙箱中编译执行，并捕获输出结果
+	ExecuteCode(ctx context.Context, in *ExecuteCodeRequest, opts ...grpc.CallOption) (*ExecuteCodeResponse, error)
 }
 
 type workspaceServiceClient struct {
@@ -89,6 +92,16 @@ func (c *workspaceServiceClient) DestroyWorkspace(ctx context.Context, in *Destr
 	return out, nil
 }
 
+func (c *workspaceServiceClient) ExecuteCode(ctx context.Context, in *ExecuteCodeRequest, opts ...grpc.CallOption) (*ExecuteCodeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ExecuteCodeResponse)
+	err := c.cc.Invoke(ctx, WorkspaceService_ExecuteCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WorkspaceServiceServer is the server API for WorkspaceService service.
 // All implementations must embed UnimplementedWorkspaceServiceServer
 // for forward compatibility.
@@ -103,6 +116,8 @@ type WorkspaceServiceServer interface {
 	GetWorkspaceStatus(context.Context, *GetWorkspaceStatusRequest) (*GetWorkspaceStatusResponse, error)
 	// 彻底销毁沙箱并回收所有资源
 	DestroyWorkspace(context.Context, *DestroyWorkspaceRequest) (*DestroyWorkspaceResponse, error)
+	// 将代码推送到沙箱中编译执行，并捕获输出结果
+	ExecuteCode(context.Context, *ExecuteCodeRequest) (*ExecuteCodeResponse, error)
 	mustEmbedUnimplementedWorkspaceServiceServer()
 }
 
@@ -124,6 +139,9 @@ func (UnimplementedWorkspaceServiceServer) GetWorkspaceStatus(context.Context, *
 }
 func (UnimplementedWorkspaceServiceServer) DestroyWorkspace(context.Context, *DestroyWorkspaceRequest) (*DestroyWorkspaceResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DestroyWorkspace not implemented")
+}
+func (UnimplementedWorkspaceServiceServer) ExecuteCode(context.Context, *ExecuteCodeRequest) (*ExecuteCodeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ExecuteCode not implemented")
 }
 func (UnimplementedWorkspaceServiceServer) mustEmbedUnimplementedWorkspaceServiceServer() {}
 func (UnimplementedWorkspaceServiceServer) testEmbeddedByValue()                          {}
@@ -218,6 +236,24 @@ func _WorkspaceService_DestroyWorkspace_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WorkspaceService_ExecuteCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExecuteCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WorkspaceServiceServer).ExecuteCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WorkspaceService_ExecuteCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WorkspaceServiceServer).ExecuteCode(ctx, req.(*ExecuteCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WorkspaceService_ServiceDesc is the grpc.ServiceDesc for WorkspaceService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -241,7 +277,11 @@ var WorkspaceService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "DestroyWorkspace",
 			Handler:    _WorkspaceService_DestroyWorkspace_Handler,
 		},
+		{
+			MethodName: "ExecuteCode",
+			Handler:    _WorkspaceService_ExecuteCode_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "vibe/workspace/v1/workspace.proto",
+	Metadata: "workspace.proto",
 }
