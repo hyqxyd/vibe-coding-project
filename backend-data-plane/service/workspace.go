@@ -129,6 +129,40 @@ func (s *WorkspaceService) ExecuteCode(ctx context.Context, req *pb.ExecuteCodeR
 	log.Printf("Received ExecuteCode request for workspace: %s", req.WorkspaceId)
 	containerName := fmt.Sprintf("vibe-ws-%s", req.WorkspaceId)
 
+	// 0. 核心兜底策略 (Auto-Recovery): 如果容器被 AutoRemove 或因 OOM 崩溃，我们在这里拦截并原地重生
+	inspect, inspectErr := s.dockerClient.ContainerInspect(ctx, containerName)
+	if inspectErr != nil || !inspect.State.Running {
+		log.Printf("Container %s is missing or stopped, auto-recovering...", containerName)
+
+		// 如果容器因异常停止但还残留在系统中，先强制清理
+		if inspectErr == nil {
+			_ = s.dockerClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{Force: true})
+		}
+
+		// 重新创建并启动一个全新的干净沙箱
+		resp, createErr := s.dockerClient.ContainerCreate(ctx, &container.Config{
+			Image:      "alpine:latest",
+			Cmd:        []string{"tail", "-f", "/dev/null"},
+			Tty:        true,
+			WorkingDir: "/workspace",
+		}, &container.HostConfig{
+			AutoRemove: true,
+			Resources: container.Resources{
+				Memory:   512 * 1024 * 1024,
+				NanoCPUs: 1000 * 1000000,
+			},
+		}, nil, nil, containerName)
+
+		if createErr != nil {
+			return nil, fmt.Errorf("failed to auto-recover container: %w", createErr)
+		}
+
+		if startErr := s.dockerClient.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); startErr != nil {
+			return nil, fmt.Errorf("failed to start recovered container: %w", startErr)
+		}
+		log.Printf("Auto-recovery successful for %s", containerName)
+	}
+
 	// 1. Create a tar archive containing the files
 	var tarBuffer bytes.Buffer
 	tarWriter := tar.NewWriter(&tarBuffer)
