@@ -33,7 +33,7 @@ public class GrpcWorkspaceClientImpl implements WorkspaceDaemonClient {
                 .setWorkspaceId(workspaceId)
                 .setStudentId(studentId)
                 .setCourseId(courseId)
-                .setBaseImage("ubuntu:latest")
+                .setBaseImage("alpine:latest")
                 .setCpuLimitM(1000)
                 .setMemoryLimitMb(512)
                 .build();

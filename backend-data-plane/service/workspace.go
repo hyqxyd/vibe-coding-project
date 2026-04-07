@@ -31,12 +31,12 @@ func (s *WorkspaceService) StartWorkspace(ctx context.Context, req *pb.StartWork
 	// We'll assume the image exists or just use a basic one for now.
 	imageName := req.BaseImage
 	if imageName == "" {
-		imageName = "ubuntu:latest"
+		imageName = "alpine:latest"
 	}
 
 	resp, err := s.dockerClient.ContainerCreate(ctx, &container.Config{
 		Image: imageName,
-		Cmd:   []string{"sleep", "infinity"},
+		Cmd:   []string{"tail", "-f", "/dev/null"},
 		Tty:   true,
 	}, &container.HostConfig{
 		Resources: container.Resources{
@@ -75,7 +75,7 @@ func (s *WorkspaceService) StartWorkspace(ctx context.Context, req *pb.StartWork
 func (s *WorkspaceService) StopWorkspace(ctx context.Context, req *pb.StopWorkspaceRequest) (*pb.StopWorkspaceResponse, error) {
 	log.Printf("Received StopWorkspace request for workspace: %s", req.WorkspaceId)
 	containerName := fmt.Sprintf("vibe-ws-%s", req.WorkspaceId)
-	
+
 	err := s.dockerClient.ContainerStop(ctx, containerName, container.StopOptions{})
 	if err != nil {
 		return &pb.StopWorkspaceResponse{Success: false, ErrorMessage: err.Error()}, nil
@@ -87,7 +87,7 @@ func (s *WorkspaceService) StopWorkspace(ctx context.Context, req *pb.StopWorksp
 func (s *WorkspaceService) GetWorkspaceStatus(ctx context.Context, req *pb.GetWorkspaceStatusRequest) (*pb.GetWorkspaceStatusResponse, error) {
 	log.Printf("Received GetWorkspaceStatus request for workspace: %s", req.WorkspaceId)
 	containerName := fmt.Sprintf("vibe-ws-%s", req.WorkspaceId)
-	
+
 	inspect, err := s.dockerClient.ContainerInspect(ctx, containerName)
 	if err != nil {
 		return nil, fmt.Errorf("failed to inspect container: %w", err)
@@ -110,7 +110,7 @@ func (s *WorkspaceService) GetWorkspaceStatus(ctx context.Context, req *pb.GetWo
 func (s *WorkspaceService) DestroyWorkspace(ctx context.Context, req *pb.DestroyWorkspaceRequest) (*pb.DestroyWorkspaceResponse, error) {
 	log.Printf("Received DestroyWorkspace request for workspace: %s", req.WorkspaceId)
 	containerName := fmt.Sprintf("vibe-ws-%s", req.WorkspaceId)
-	
+
 	err := s.dockerClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{Force: true})
 	if err != nil {
 		return &pb.DestroyWorkspaceResponse{Success: false, ErrorMessage: err.Error()}, nil
