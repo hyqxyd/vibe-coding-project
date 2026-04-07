@@ -1,4 +1,7 @@
-# 忽略 Obsidian 产生的与个人设备绑定的配置
+# 忽略 Obsidian 产生的与个人设备绑定的配置（支持项目根目录与 .ai-collab 子目录）
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache/
 .ai-collab/.obsidian/workspace.json
 .ai-collab/.obsidian/workspace-mobile.json
 .ai-collab/.obsidian/cache/
