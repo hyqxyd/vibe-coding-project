@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/docker/docker/api/types"
@@ -15,9 +16,102 @@ import (
 	pb "github.com/hyqxyd/vibe-coding-project/backend-data-plane/api/workspace/v1"
 )
 
+type WarmPool struct {
+	mu         sync.Mutex
+	containers []string // Container IDs
+	client     *client.Client
+	maxSize    int
+}
+
+func newWarmPool(cli *client.Client, maxSize int) *WarmPool {
+	p := &WarmPool{
+		client:  cli,
+		maxSize: maxSize,
+	}
+	go p.maintain(context.Background())
+	return p
+}
+
+func (p *WarmPool) maintain(ctx context.Context) {
+	ticker := time.NewTicker(2 * time.Second)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			p.mu.Lock()
+			currentSize := len(p.containers)
+			p.mu.Unlock()
+
+			if currentSize < p.maxSize {
+				id, err := p.createContainer(ctx, "") // Empty name for random
+				if err == nil {
+					p.mu.Lock()
+					p.containers = append(p.containers, id)
+					p.mu.Unlock()
+					log.Printf("WarmPool: added new container %s (pool size: %d/%d)", id[:12], currentSize+1, p.maxSize)
+				} else {
+					log.Printf("WarmPool: failed to create container: %v", err)
+				}
+			}
+		}
+	}
+}
+
+func (p *WarmPool) createContainer(ctx context.Context, name string) (string, error) {
+	resp, err := p.client.ContainerCreate(ctx, &container.Config{
+		Image:      "python:3.11-slim",
+		Cmd:        []string{"tail", "-f", "/dev/null"},
+		Tty:        true,
+		WorkingDir: "/workspace",
+	}, &container.HostConfig{
+		AutoRemove: true,
+		Resources: container.Resources{
+			Memory:   512 * 1024 * 1024,
+			NanoCPUs: 1000 * 1000000,
+		},
+	}, nil, nil, name)
+
+	if err != nil {
+		return "", err
+	}
+
+	if err := p.client.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		_ = p.client.ContainerRemove(ctx, resp.ID, types.ContainerRemoveOptions{Force: true})
+		return "", err
+	}
+	return resp.ID, nil
+}
+
+func (p *WarmPool) GetContainer(ctx context.Context, targetName string) (string, error) {
+	p.mu.Lock()
+	if len(p.containers) > 0 {
+		id := p.containers[len(p.containers)-1]
+		p.containers = p.containers[:len(p.containers)-1]
+		p.mu.Unlock()
+
+		// Rename it
+		err := p.client.ContainerRename(ctx, id, targetName)
+		if err != nil {
+			log.Printf("WarmPool: failed to rename container %s, destroying it. Err: %v", id[:12], err)
+			_ = p.client.ContainerRemove(ctx, id, types.ContainerRemoveOptions{Force: true})
+			// Try again recursively
+			return p.GetContainer(ctx, targetName)
+		}
+		log.Printf("WarmPool: allocated container %s and renamed to %s", id[:12], targetName)
+		return id, nil
+	}
+	p.mu.Unlock()
+
+	log.Printf("WarmPool: pool is empty, creating container synchronously for %s", targetName)
+	return p.createContainer(ctx, targetName)
+}
+
 type WorkspaceService struct {
 	pb.UnimplementedWorkspaceServiceServer
 	dockerClient *client.Client
+	pool         *WarmPool
 }
 
 func NewWorkspaceService() (*WorkspaceService, error) {
@@ -25,34 +119,35 @@ func NewWorkspaceService() (*WorkspaceService, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create docker client: %w", err)
 	}
-	return &WorkspaceService{dockerClient: cli}, nil
+	pool := newWarmPool(cli, 5) // Maintain 5 containers
+	return &WorkspaceService{dockerClient: cli, pool: pool}, nil
 }
 
 func (s *WorkspaceService) StartWorkspace(ctx context.Context, req *pb.StartWorkspaceRequest) (*pb.StartWorkspaceResponse, error) {
 	log.Printf("Received StartWorkspace request for workspace: %s", req.WorkspaceId)
+	containerName := fmt.Sprintf("vibe-ws-%s", req.WorkspaceId)
 
-	// Note: In a real system, you'd pull the image first if it doesn't exist.
-	// We'll assume the image exists or just use a basic one for now.
-	imageName := req.BaseImage
-	if imageName == "" {
-		imageName = "alpine:latest"
+	// 检查是否已经存在且运行中
+	inspect, err := s.dockerClient.ContainerInspect(ctx, containerName)
+	if err == nil && inspect.State.Running {
+		log.Printf("Workspace container %s already running", containerName)
+		return &pb.StartWorkspaceResponse{
+			WorkspaceId: req.WorkspaceId,
+			ContainerId: inspect.ID,
+			PtyWsUrl:    fmt.Sprintf("ws://localhost:8080/pty/%s", req.WorkspaceId),
+			Status:      pb.WorkspaceStatus_WORKSPACE_STATUS_RUNNING,
+		}, nil
 	}
 
-	resp, err := s.dockerClient.ContainerCreate(ctx, &container.Config{
-		Image:      imageName,
-		Cmd:        []string{"tail", "-f", "/dev/null"},
-		Tty:        true,
-		WorkingDir: "/workspace",
-	}, &container.HostConfig{
-		AutoRemove: true, // 容器停止时自动清理
-		Resources: container.Resources{
-			Memory:   int64(req.MemoryLimitMb) * 1024 * 1024,
-			NanoCPUs: int64(req.CpuLimitM) * 1000000,
-		},
-	}, nil, nil, fmt.Sprintf("vibe-ws-%s", req.WorkspaceId))
+	// 尝试清理残留的停止容器
+	if err == nil {
+		_ = s.dockerClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{Force: true})
+	}
 
+	// 从温启动池获取
+	id, err := s.pool.GetContainer(ctx, containerName)
 	if err != nil {
-		log.Printf("Failed to create container: %v", err)
+		log.Printf("Failed to get container from pool: %v", err)
 		return &pb.StartWorkspaceResponse{
 			WorkspaceId:  req.WorkspaceId,
 			Status:       pb.WorkspaceStatus_WORKSPACE_STATUS_FAILED,
@@ -60,20 +155,11 @@ func (s *WorkspaceService) StartWorkspace(ctx context.Context, req *pb.StartWork
 		}, nil
 	}
 
-	if err := s.dockerClient.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		log.Printf("Failed to start container: %v", err)
-		return &pb.StartWorkspaceResponse{
-			WorkspaceId:  req.WorkspaceId,
-			Status:       pb.WorkspaceStatus_WORKSPACE_STATUS_FAILED,
-			ErrorMessage: err.Error(),
-		}, nil
-	}
-
-	log.Printf("Successfully started workspace container: %s", resp.ID)
+	log.Printf("Successfully started workspace container from Warm Pool: %s", id)
 	return &pb.StartWorkspaceResponse{
 		WorkspaceId: req.WorkspaceId,
-		ContainerId: resp.ID,
-		PtyWsUrl:    fmt.Sprintf("ws://localhost:8080/pty/%s", req.WorkspaceId), // Mock PTY URL
+		ContainerId: id,
+		PtyWsUrl:    fmt.Sprintf("ws://localhost:8080/pty/%s", req.WorkspaceId),
 		Status:      pb.WorkspaceStatus_WORKSPACE_STATUS_RUNNING,
 	}, nil
 }
@@ -132,35 +218,19 @@ func (s *WorkspaceService) ExecuteCode(ctx context.Context, req *pb.ExecuteCodeR
 	// 0. 核心兜底策略 (Auto-Recovery): 如果容器被 AutoRemove 或因 OOM 崩溃，我们在这里拦截并原地重生
 	inspect, inspectErr := s.dockerClient.ContainerInspect(ctx, containerName)
 	if inspectErr != nil || !inspect.State.Running {
-		log.Printf("Container %s is missing or stopped, auto-recovering...", containerName)
+		log.Printf("Container %s is missing or stopped, auto-recovering from Warm Pool...", containerName)
 
 		// 如果容器因异常停止但还残留在系统中，先强制清理
 		if inspectErr == nil {
 			_ = s.dockerClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{Force: true})
 		}
 
-		// 重新创建并启动一个全新的干净沙箱
-		resp, createErr := s.dockerClient.ContainerCreate(ctx, &container.Config{
-			Image:      "alpine:latest",
-			Cmd:        []string{"tail", "-f", "/dev/null"},
-			Tty:        true,
-			WorkingDir: "/workspace",
-		}, &container.HostConfig{
-			AutoRemove: true,
-			Resources: container.Resources{
-				Memory:   512 * 1024 * 1024,
-				NanoCPUs: 1000 * 1000000,
-			},
-		}, nil, nil, containerName)
-
-		if createErr != nil {
-			return nil, fmt.Errorf("failed to auto-recover container: %w", createErr)
+		// 从温启动池获取新的容器
+		id, recoverErr := s.pool.GetContainer(ctx, containerName)
+		if recoverErr != nil {
+			return nil, fmt.Errorf("failed to auto-recover container from pool: %w", recoverErr)
 		}
-
-		if startErr := s.dockerClient.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); startErr != nil {
-			return nil, fmt.Errorf("failed to start recovered container: %w", startErr)
-		}
-		log.Printf("Auto-recovery successful for %s", containerName)
+		log.Printf("Auto-recovery successful for %s (new id: %s)", containerName, id[:12])
 	}
 
 	// 1. Create a tar archive containing the files

@@ -1,0 +1,9 @@
+{
+  "userIgnoreFilters": [
+    "backend-control-plane/",
+    "backend-data-plane/",
+    "proto-contracts/",
+    "frontend-platform/"
+  ],
+  "showUnsupportedFiles": true
+}

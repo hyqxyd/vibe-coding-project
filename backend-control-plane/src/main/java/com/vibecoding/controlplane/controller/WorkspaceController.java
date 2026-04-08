@@ -10,6 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/workspace")
+@CrossOrigin(origins = "*") // 允许前端跨域请求
 public class WorkspaceController {
 
     private final WorkspaceDaemonClient workspaceClient;
