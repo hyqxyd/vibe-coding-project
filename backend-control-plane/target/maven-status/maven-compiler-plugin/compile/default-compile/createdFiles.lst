@@ -32,11 +32,13 @@ com\vibecoding\workspace\v1\ExecuteCodeResponse.class
 com\vibecoding\workspace\v1\DestroyWorkspaceRequestOrBuilder.class
 com\vibecoding\controlplane\controller\WorkspaceController$ExecuteCodePayload.class
 com\vibecoding\workspace\v1\GetWorkspaceStatusResponse$Builder.class
+com\vibecoding\controlplane\controller\ApiProxyController.class
 com\vibecoding\controlplane\controller\WorkspaceController.class
 com\vibecoding\workspace\v1\WorkspaceServiceGrpc$1.class
 com\vibecoding\controlplane\service\ai\AiReviewerService.class
 com\vibecoding\workspace\v1\ExecuteCodeRequest$Builder.class
 com\vibecoding\workspace\v1\StartWorkspaceRequest.class
+com\vibecoding\controlplane\service\workspace\ApiKeyManager.class
 com\vibecoding\workspace\v1\ExecuteCodeRequest$FilesDefaultEntryHolder.class
 com\vibecoding\workspace\v1\StopWorkspaceResponse$1.class
 com\vibecoding\workspace\v1\WorkspaceServiceGrpc$WorkspaceServiceBaseDescriptorSupplier.class

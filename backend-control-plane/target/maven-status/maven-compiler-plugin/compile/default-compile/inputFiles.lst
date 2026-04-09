@@ -1,4 +1,5 @@
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StopWorkspaceResponse.java
+D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\controller\ApiProxyController.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\config\AiConfig.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\GetWorkspaceStatusRequestOrBuilder.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\WorkspaceStatus.java
@@ -26,6 +27,7 @@ D:\Games\vibe coding project\backend-control-plane\target\generated-sources\prot
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StartWorkspaceResponseOrBuilder.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\ControlPlaneApplication.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\ExecuteCodeRequest.java
+D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\service\workspace\ApiKeyManager.java
 D:\Games\vibe coding project\backend-control-plane\src\main\java\com\vibecoding\controlplane\service\workspace\GrpcWorkspaceClientImpl.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\GetWorkspaceStatusRequest.java
 D:\Games\vibe coding project\backend-control-plane\target\generated-sources\protobuf\java\com\vibecoding\workspace\v1\StartWorkspaceRequest.java

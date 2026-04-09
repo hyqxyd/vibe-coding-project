@@ -3,10 +3,12 @@ package com.vibecoding.controlplane.controller;
 import com.vibecoding.controlplane.service.workspace.CodeExecutionResult;
 import com.vibecoding.controlplane.service.workspace.WorkspaceDaemonClient;
 import com.vibecoding.controlplane.service.workspace.WorkspaceInfo;
+import com.vibecoding.controlplane.service.workspace.ApiKeyManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/v1/workspace")
@@ -14,10 +16,12 @@ import java.util.Map;
 public class WorkspaceController {
 
     private final WorkspaceDaemonClient workspaceClient;
+    private final ApiKeyManager apiKeyManager;
 
     @Autowired
-    public WorkspaceController(WorkspaceDaemonClient workspaceClient) {
+    public WorkspaceController(WorkspaceDaemonClient workspaceClient, ApiKeyManager apiKeyManager) {
         this.workspaceClient = workspaceClient;
+        this.apiKeyManager = apiKeyManager;
     }
 
     @PostMapping("/start")
@@ -46,9 +50,21 @@ public class WorkspaceController {
     public CodeExecutionResult executeCode(
             @PathVariable String workspaceId,
             @RequestBody ExecuteCodePayload payload) {
+        
+        Map<String, String> files = payload.getFiles();
+        if (files == null) {
+            files = new HashMap<>();
+        }
+        
+        // Inject API Key from Control Plane (MVP approach)
+        String apiKey = apiKeyManager.getActiveApiKey();
+        if (apiKey != null && !apiKey.isEmpty()) {
+            files.put("src/data/config.json", "{\n  \"KIMI_API_KEY\": \"" + apiKey + "\"\n}");
+        }
+
         return workspaceClient.executeCode(
                 workspaceId, 
-                payload.getFiles(), 
+                files, 
                 payload.getCommand(), 
                 payload.getTimeoutSeconds() != null ? payload.getTimeoutSeconds() : 30
         );

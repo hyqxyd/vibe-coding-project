@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 
-interface ChatMessage {
+export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
@@ -12,14 +12,13 @@ interface ChatMessage {
   }[];
 }
 
-export function AiChatPanel() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: '你好！我是你的 Vibe Coding 助手。你可以告诉我你想搭建什么样的多智能体应用？我会帮你生成 Agent 流程图，如果你想自己写代码，也可以在顶部切换到“Code Editor”自己动手修改！'
-    }
-  ]);
+interface AiChatPanelProps {
+  messages: ChatMessage[];
+  onSendMessage: (msg: string) => void;
+  isProcessing: boolean;
+}
+
+export function AiChatPanel({ messages, onSendMessage, isProcessing }: AiChatPanelProps) {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -32,52 +31,10 @@ export function AiChatPanel() {
   }, [messages]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isProcessing) return;
     
-    // Add user message
-    const userMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: input };
-    setMessages(prev => [...prev, userMsg]);
+    onSendMessage(input);
     setInput('');
-
-    // Mock AI response process (Idea -> Reality)
-    const assistantMsgId = (Date.now() + 1).toString();
-    setMessages(prev => [...prev, {
-      id: assistantMsgId,
-      role: 'assistant',
-      content: `收到！正在将你的想法转化为实际项目...`,
-      actions: [
-        { type: 'flow', label: '规划多智能体流转图...', status: 'loading' }
-      ]
-    }]);
-
-    setTimeout(() => {
-      setMessages(prev => prev.map(msg => 
-        msg.id === assistantMsgId 
-          ? { 
-              ...msg, 
-              actions: [
-                { type: 'flow', label: '多智能体流转图已生成', status: 'done' },
-                { type: 'code', label: '生成核心处理逻辑代码...', status: 'loading' }
-              ] 
-            } 
-          : msg
-      ));
-    }, 1500);
-
-    setTimeout(() => {
-      setMessages(prev => prev.map(msg => 
-        msg.id === assistantMsgId 
-          ? { 
-              ...msg, 
-              content: `我已经为你搭建好了基础架构！\n\n你可以：\n1. 在中间的【Agent Flow】修改 Prompt。\n2. 点击顶部的【Code Editor】发挥你的能动性，亲自修改底层的 Python 逻辑或前端 UI 样式。\n3. 最后点击【UI Preview】查看效果。`,
-              actions: [
-                { type: 'flow', label: '多智能体流转图已生成', status: 'done' },
-                { type: 'code', label: '后端逻辑与前端框架已生成', status: 'done' }
-              ] 
-            } 
-          : msg
-      ));
-    }, 3000);
   };
 
   return (

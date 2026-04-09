@@ -4,7 +4,7 @@ import { LiveProvider, LivePreview, LiveError } from 'react-live'
 import { CodeEditor } from './components/CodeEditor'
 import { TerminalPanel } from './components/TerminalPanel'
 import { AgentFlowCanvas } from './components/AgentFlowCanvas'
-import { AiChatPanel } from './components/AiChatPanel'
+import { AiChatPanel, type ChatMessage } from './components/AiChatPanel'
 import { FileExplorer } from './components/FileExplorer'
 import { useNodesState, useEdgesState, addEdge } from '@xyflow/react'
 import type { Node, Edge, Connection } from '@xyflow/react'
@@ -38,7 +38,181 @@ function App() {
   const [configTab, setConfigTab] = useState<'prompt' | 'code'>('prompt');
   const [isParamsOpen, setIsParamsOpen] = useState(true);
   const [isLogsOpen, setIsLogsOpen] = useState(true);
-  
+
+  // AI Chat state
+  const [isAiProcessing, setIsAiProcessing] = useState(false);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: '你好！我是你的 Vibe Coding 助手。你可以告诉我你想搭建什么样的多智能体应用？我会帮你自动修改画布连线和生成相关代码！'
+    }
+  ]);
+
+  // 后端沙箱就绪状态
+  const [isBackendReady, setIsBackendReady] = useState(false);
+  const [backendStatusMsg, setBackendStatusMsg] = useState('正在初始化沙箱环境...');
+
+  // 初始化工作空间和恢复本地状态
+  React.useEffect(() => {
+    const initWorkspace = async () => {
+      try {
+        setBackendStatusMsg('正在连接后端沙箱...');
+        // 调用启动工作区接口
+        const response = await fetch(`http://localhost:8080/api/v1/workspace/start?studentId=stu1&courseId=course1`, {
+          method: 'POST'
+        });
+        
+        if (response.ok) {
+          setIsBackendReady(true);
+          setBackendStatusMsg('沙箱就绪');
+        } else {
+          setBackendStatusMsg('沙箱启动失败，请检查后端服务');
+        }
+      } catch (err) {
+        console.error("Failed to init workspace", err);
+        setBackendStatusMsg('后端服务未连接');
+      }
+    };
+    
+    // 恢复本地存储的状态
+    const savedNodes = localStorage.getItem('vibe_nodes');
+    const savedEdges = localStorage.getItem('vibe_edges');
+    const savedFiles = localStorage.getItem('vibe_files');
+    const savedChats = localStorage.getItem('vibe_chats');
+
+    if (savedNodes) setNodes(JSON.parse(savedNodes));
+    if (savedEdges) setEdges(JSON.parse(savedEdges));
+    if (savedFiles) setFiles(JSON.parse(savedFiles));
+    if (savedChats) setChatMessages(JSON.parse(savedChats));
+
+    initWorkspace();
+  }, []);
+
+  // 监听状态变化并保存到 LocalStorage
+  React.useEffect(() => {
+    localStorage.setItem('vibe_nodes', JSON.stringify(nodes));
+    localStorage.setItem('vibe_edges', JSON.stringify(edges));
+    localStorage.setItem('vibe_files', JSON.stringify(files));
+    localStorage.setItem('vibe_chats', JSON.stringify(chatMessages));
+  }, [nodes, edges, files, chatMessages]);
+
+  const handleAiCommand = async (input: string) => {
+    // 1. Add user message
+    const userMsgId = Date.now().toString();
+    setChatMessages(prev => [...prev, { id: userMsgId, role: 'user', content: input }]);
+    setIsAiProcessing(true);
+
+    const assistantMsgId = (Date.now() + 1).toString();
+    setChatMessages(prev => [...prev, { 
+      id: assistantMsgId, 
+      role: 'assistant', 
+      content: '思考中...', 
+      actions: [{ type: 'flow', label: '调用大模型规划系统结构...', status: 'loading' }] 
+    }]);
+
+    try {
+      // 构建传给 LLM 的系统 Prompt，携带当前的画布和代码状态
+      const systemPrompt = `你是一个 Vibe Coding 多智能体构建助手。
+目标：根据用户的自然语言描述，帮用户修改工作流节点(nodes)、连线(edges)和代码文件(files)。
+当前已有的节点：${JSON.stringify(nodes.map(n => ({ id: n.id, data: n.data, type: n.type, position: n.position })))}
+当前已有的连线：${JSON.stringify(edges)}
+当前已有的文件（仅列出文件名）：${JSON.stringify(Object.keys(files))}
+
+请注意，为了保证能够正确渲染和运行，请**只输出**合法的 JSON 数据，不要包含 markdown 代码块 (比如 \`\`\`json)，也不要包含多余的解释文字。格式如下：
+{
+  "reply": "回复给用户的话，解释你做了什么",
+  "nodes": [
+    { "id": "1", "position": { "x": 100, "y": 100 }, "data": { "label": "节点名称", "filename": "关联的文件路径" }, "type": "input|default|output" }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "1", "target": "2" }
+  ],
+  "files": {
+    "src/data/Input_1.json": { "content": "...", "language": "json" },
+    "src/agents/Agent_2.py": { "content": "...", "language": "python" }
+  }
+}
+请直接输出新的全量 nodes, edges, 和你更新或新增的 files 集合。注意：返回 nodes 时必须包含每个节点的 position 属性！`;
+
+      // Call our own Java Control Plane API Proxy Gateway instead of DashScope directly
+      const response = await fetch("http://localhost:8080/api/v1/gateway/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "qwen-plus",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: input }
+          ],
+          temperature: 0.2
+        })
+      });
+
+      if (!response.ok) throw new Error("LLM API request failed: " + response.statusText);
+
+      const data = await response.json();
+      let rawContent = data.choices[0].message.content.trim();
+      
+      // 简单清洗可能存在的 Markdown 格式
+      if (rawContent.startsWith("```json")) {
+        rawContent = rawContent.replace(/^```json/g, "").replace(/```$/g, "").trim();
+      } else if (rawContent.startsWith("```")) {
+        rawContent = rawContent.replace(/^```/g, "").replace(/```$/g, "").trim();
+      }
+
+      const parsed = JSON.parse(rawContent);
+
+      // 更新状态
+      if (parsed.nodes && Array.isArray(parsed.nodes)) {
+        // Fallback for missing positions
+        const validatedNodes = parsed.nodes.map((node: any, index: number) => {
+          if (!node.position || typeof node.position.x === 'undefined' || typeof node.position.y === 'undefined') {
+            const existingNode = nodes.find(n => n.id === node.id);
+            return {
+              ...node,
+              position: existingNode?.position || { x: 100, y: 100 + (index * 150) }
+            };
+          }
+          return node;
+        });
+        setNodes(validatedNodes);
+      }
+      if (parsed.edges && Array.isArray(parsed.edges)) {
+        setEdges(parsed.edges);
+      }
+      if (parsed.files && typeof parsed.files === 'object') {
+        setFiles(prev => ({ ...prev, ...parsed.files }));
+      }
+
+      // 更新消息为成功状态
+      setChatMessages(prev => prev.map(msg => 
+        msg.id === assistantMsgId ? { 
+          ...msg, 
+          content: parsed.reply || "我已为你更新了架构！",
+          actions: [
+            { type: 'flow', label: '节点与连线已更新', status: 'done' },
+            { type: 'code', label: '代码文件已更新', status: 'done' }
+          ]
+        } : msg
+      ));
+
+    } catch (error: any) {
+      console.error(error);
+      setChatMessages(prev => prev.map(msg => 
+        msg.id === assistantMsgId ? { 
+          ...msg, 
+          content: "抱歉，在处理你的请求时发生了错误：" + error.message,
+          actions: []
+        } : msg
+      ));
+    } finally {
+      setIsAiProcessing(false);
+    }
+  };
+
   // Node parameters extraction & management
   const extractParams = (prompt: string) => {
     const matches = prompt.match(/\{([a-zA-Z0-9_]+)\}/g) || [];
@@ -61,7 +235,7 @@ function App() {
 
   const [files, setFiles] = useState<Record<string, { content: string, language: string }>>({
     'src/data/Input_1.json': { content: '{\n  "product_name": "便携式咖啡机",\n  "features": "小巧轻便，高压萃取，无需插电"\n}\n', language: 'json' },
-    'src/agents/Agent_2.py': { content: 'import json\nimport sys\nimport os\n\ndef process():\n    try:\n        # 从相对路径读取文件\n        with open("../data/Input_1.json", "r", encoding="utf-8") as f:\n            input_data = json.load(f)\n    except FileNotFoundError:\n        print("Error: Input_1.json not found.", file=sys.stderr)\n        sys.exit(1)\n\n    product_name = input_data.get("product_name", "Unknown")\n    features = input_data.get("features", "None")\n    \n    print(f"Processing product: {product_name} with features: {features}")\n    \n    # TODO: Connect to real LLM API\n    # Mocking LLM response for now\n    mock_llm_response = f"☕️ 早八人的救星来啦！\\n✨ 这款【{product_name}】绝对是打工人的随身好物！\\n🔥 {features}！#好物分享 #日常"\n    \n    output_data = {\n        "ui_component": "SocialMediaCard",\n        "data": {\n            "title": f"推荐：{product_name}",\n            "copywriting": mock_llm_response\n        }\n    }\n    \n    # 写入相对路径\n    with open("../data/Output_3.json", "w", encoding="utf-8") as f:\n        json.dump(output_data, f, ensure_ascii=False, indent=2)\n        \n    print("Output successfully written to Output_3.json")\n\nif __name__ == "__main__":\n    process()\n', language: 'python' },
+    'src/agents/Agent_2.py': { content: 'import json\nimport sys\nimport os\nimport urllib.request\nimport urllib.error\n\ndef process():\n    try:\n        with open("../data/Input_1.json", "r", encoding="utf-8") as f:\n            input_data = json.load(f)\n    except FileNotFoundError:\n        print("Error: Input_1.json not found.", file=sys.stderr)\n        sys.exit(1)\n\n    product_name = input_data.get("product_name", "Unknown")\n    features = input_data.get("features", "None")\n    \n    print(f"Processing product: {product_name} with features: {features}")\n    \n    api_key = os.environ.get("KIMI_API_KEY")\n    if not api_key:\n        try:\n            with open("../data/config.json", "r", encoding="utf-8") as f:\n                config = json.load(f)\n                api_key = config.get("KIMI_API_KEY")\n        except:\n            pass\n\n    if not api_key:\n        print("Error: KIMI_API_KEY not found in env or config.json.", file=sys.stderr)\n        sys.exit(1)\n\n    url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"\n    headers = {\n        "Content-Type": "application/json",\n        "Authorization": f"Bearer {api_key}"\n    }\n    \n    prompt = f"你是一个资深的小红书爆款写手。请根据以下产品信息撰写一篇带 Emoji 的种草文案：\\n产品名称：{product_name}\\n核心卖点：{features}"\n    \n    data = {\n        "model": "kimi-k2.5",\n        "messages": [\n            {"role": "system", "content": "你是一个资深的小红书爆款写手。输出纯文案即可，不要包含多余的解释。"},\n            {"role": "user", "content": prompt}\n        ],\n        "temperature": 0.7\n    }\n    \n    print("Calling Aliyun DashScope (Kimi-k2.5) API...")\n    req = urllib.request.Request(url, data=json.dumps(data).encode("utf-8"), headers=headers, method="POST")\n    try:\n        with urllib.request.urlopen(req) as response:\n            res_body = response.read().decode("utf-8")\n            res_json = json.loads(res_body)\n            llm_content = res_json["choices"][0]["message"]["content"]\n            print("API call successful.")\n    except urllib.error.URLError as e:\n        print(f"API Request failed: {e}", file=sys.stderr)\n        if hasattr(e, "read"):\n            print(e.read().decode("utf-8"), file=sys.stderr)\n        sys.exit(1)\n    \n    output_data = {\n        "ui_component": "SocialMediaCard",\n        "data": {\n            "title": f"推荐：{product_name}",\n            "copywriting": llm_content\n        }\n    }\n    \n    with open("../data/Output_3.json", "w", encoding="utf-8") as f:\n        json.dump(output_data, f, ensure_ascii=False, indent=2)\n        \n    print("Output successfully written to Output_3.json")\n\nif __name__ == "__main__":\n    process()\n', language: 'python' },
     'src/data/Output_3.json': { content: '{\n  "ui_component": "SocialMediaCard",\n  "data": {\n    "title": "Waiting...",\n    "copywriting": "Waiting..."\n  }\n}\n', language: 'json' },
     'src/App.tsx': { content: 'import React from "react";\n\nexport default function App() {\n  return <div>App Preview</div>;\n}\n', language: 'typescript' },
     'src/ui/SocialMediaCard.tsx': { content: `function SocialMediaCard({ title, copywriting, image }) {
@@ -200,7 +374,9 @@ render(<SocialMediaCard title={title} copywriting={copywriting} image={image} />
       
       // Pack all current files
       for (const [fname, fobj] of Object.entries(files)) {
-        payloadFiles[fname] = fobj.content;
+        if (fname !== 'src/data/config.json') {
+          payloadFiles[fname] = fobj.content;
+        }
       }
       // Override with new input
       payloadFiles['src/data/Input_1.json'] = inputContent;
@@ -305,11 +481,18 @@ render(<SocialMediaCard title={title} copywriting={copywriting} image={image} />
     }
   };
 
+  const handleResetWorkspace = () => {
+    if (window.confirm("确定要清空所有数据并重置工作台吗？这会清除所有本地保存的节点和代码。")) {
+      localStorage.clear();
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="flex h-screen w-full bg-[#1e1e1e] text-white overflow-hidden font-sans">
       
       {/* Sidebar - AI Chat */}
-      <AiChatPanel />
+      <AiChatPanel messages={chatMessages} onSendMessage={handleAiCommand} isProcessing={isAiProcessing} />
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1">
@@ -346,6 +529,13 @@ render(<SocialMediaCard title={title} copywriting={copywriting} image={image} />
           </div>
 
           <div className="flex gap-2">
+            <button 
+              onClick={handleResetWorkspace}
+              className="flex items-center gap-2 px-4 py-1.5 bg-red-900/50 hover:bg-red-900/80 text-red-200 text-sm rounded transition-colors border border-red-800"
+              title="清除本地缓存并重置"
+            >
+              重置
+            </button>
             <button 
               onClick={handleDeployAndRun}
               className="flex items-center gap-2 px-4 py-1.5 bg-[#007acc] hover:bg-[#005999] text-white text-sm rounded transition-colors"
@@ -499,9 +689,10 @@ render(<SocialMediaCard title={title} copywriting={copywriting} image={image} />
 
                   <button 
                     onClick={handleUserSubmit}
-                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg mt-6 transition-colors shadow-md"
+                    disabled={!isBackendReady}
+                    className={`w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg mt-6 transition-colors shadow-md ${!isBackendReady ? 'opacity-50 cursor-not-allowed' : ''}`}
                   >
-                    生成卡片 (Generate)
+                    {isBackendReady ? '生成卡片 (Generate)' : backendStatusMsg}
                   </button>
                 </div>
 

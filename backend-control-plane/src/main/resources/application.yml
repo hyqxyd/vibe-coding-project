@@ -7,6 +7,10 @@ spring:
       api-key: ${OPENAI_API_KEY:mock_key}
       base-url: ${OPENAI_BASE_URL:https://api.openai.com}
 
+llm:
+  api:
+    key: ${KIMI_API_KEY:sk-6a0845249f1d49b5bd2420e78597a523}
+
 # gRPC 客户端连接池配置
 grpc:
   client:
