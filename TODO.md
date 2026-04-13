@@ -13,10 +13,12 @@
   - **完成时间**：2026-04-09
   - **描述**：修复了 React Flow 的 `position` 崩溃 bug；实现了基于 LocalStorage 的本地状态缓存与恢复机制；增加了后端沙箱就绪检查的握手拦截。
 
-## ⏳ 待办池 (Backlog - 明日计划 2026-04-10)
+## ⏳ 待办池 (Backlog - 明日计划 2026-04-14)
 
 - [ ] **验证场景 B 的多 Agent 数据流转**
   - **描述**：测试真实的业务链路：Input -> Agent 1 (分析) -> Agent 2 (处理) -> Output，确保上一个节点的 JSON 输出能正确注入到下一个节点的 Prompt 中。
+- [ ] **Scenario A 演示前联调清单**
+  - **描述**：演示前依次确认前端 `5173`、控制面 `8080`、数据面 `50051` 均可用；验证一次“Deploy -> Generate -> Docker 输出回填”全链路。
 - [ ] **完善工作区双向同步与持久化 (后端)**
   - **描述**：目前只是前端 LocalStorage 缓存。明天需要将工作台的 `workflow.json` 和代码文件统一持久化到 Java 后端或数据库中，支持多设备重载。
 - [ ] **验证场景 C：纯前端无后端交互应用**
@@ -28,6 +30,7 @@
 
 ## ✅ 已完成 (Done)
 
+- [x] **初始化顺序与持久化修复 (2026-04-13)**：修复 `ReferenceError: Cannot access 'files' before initialization`，将 `files` 的 LocalStorage 持久化拆分为独立 effect，避免 TDZ 触发白屏。
 - [x] **场景 A 跑通**：接入阿里云千问 (qwen-plus) API，完成单轮问答与真实大模型回传渲染。
 - [x] **API Key 生产级隔离**：实现前端剥离密钥，由 Java `ApiKeyManager` 注入并下发给 Go 数据面的 MVP 安全方案。
 - [x] **Docker 温启动池优化**：Go 端维护常驻 `python:3.11-slim` 容器，解决冷启动延迟。
