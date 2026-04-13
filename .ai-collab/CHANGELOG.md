@@ -31,3 +31,11 @@
 - api_or_schema_change: 无。
 - conflict_risk: low（仅文档与计划更新）。
 - reviewer: owner
+
+## 2026-04-13 10:20 - ai - main
+
+- change_summary: 提交项目规则文档 `workflow.md`，并将治理流程要求显式纳入项目规则与任务看板。
+- ai_generated_files: .trae/rules/workflow.md; TODO.md
+- api_or_schema_change: 无。
+- conflict_risk: low（规则文档与计划项更新）。
+- reviewer: owner
