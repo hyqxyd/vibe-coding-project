@@ -23,3 +23,11 @@
 - api_or_schema_change: 新增控制面代理接口 `/api/v1/gateway/chat/completions`。
 - conflict_risk: medium（前端单文件 App.tsx 改动集中，需注意后续多人并行修改冲突）。
 - reviewer: owner
+
+## 2026-04-13 10:10 - ai - main
+
+- change_summary: 沉淀 AI 助手框架选型、知识库分层和权限治理方案文档，并同步更新项目待办状态。
+- ai_generated_files: docs/44-AI助手框架选型与知识库设计.md; TODO.md
+- api_or_schema_change: 无。
+- conflict_risk: low（仅文档与计划更新）。
+- reviewer: owner

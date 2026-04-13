@@ -30,6 +30,7 @@
 
 ## ✅ 已完成 (Done)
 
+- [x] **AI 助手框架与知识库设计文档沉淀 (2026-04-13)**：新增《44-AI助手框架选型与知识库设计》，明确 CopilotKit/LangGraph/MCP 组合、Harness 风格权限治理和知识库分层方案。
 - [x] **初始化顺序与持久化修复 (2026-04-13)**：修复 `ReferenceError: Cannot access 'files' before initialization`，将 `files` 的 LocalStorage 持久化拆分为独立 effect，避免 TDZ 触发白屏。
 - [x] **场景 A 跑通**：接入阿里云千问 (qwen-plus) API，完成单轮问答与真实大模型回传渲染。
 - [x] **API Key 生产级隔离**：实现前端剥离密钥，由 Java `ApiKeyManager` 注入并下发给 Go 数据面的 MVP 安全方案。
