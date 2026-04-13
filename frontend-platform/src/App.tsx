@@ -93,9 +93,8 @@ function App() {
   React.useEffect(() => {
     localStorage.setItem('vibe_nodes', JSON.stringify(nodes));
     localStorage.setItem('vibe_edges', JSON.stringify(edges));
-    localStorage.setItem('vibe_files', JSON.stringify(files));
     localStorage.setItem('vibe_chats', JSON.stringify(chatMessages));
-  }, [nodes, edges, files, chatMessages]);
+  }, [nodes, edges, chatMessages]);
 
   const handleAiCommand = async (input: string) => {
     // 1. Add user message
@@ -279,6 +278,11 @@ render(<SocialMediaCard title={title} copywriting={copywriting} image={image} />
     'main.go': { content: 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("Hello, Vibe Coding!")\n}\n', language: 'go' },
     'config.json': { content: '{\n  "port": 8080,\n  "env": "development"\n}\n', language: 'json' },
   });
+
+  // 在 files 声明后再持久化，避免 TDZ 报错
+  React.useEffect(() => {
+    localStorage.setItem('vibe_files', JSON.stringify(files));
+  }, [files]);
 
   const [prompts, setPrompts] = useState<Record<string, string>>({
     '1': '请在下方填写用于测试的商品信息：\n{product_name}\n{features}',
